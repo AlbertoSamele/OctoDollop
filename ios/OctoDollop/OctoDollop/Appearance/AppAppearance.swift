@@ -40,6 +40,12 @@ enum AppAppearance {
         static let styled70 = UIFont(name: "aAlloyInk", size: 70)
         /// Rounded, light, 30 pts
         static let rLight30 = rounded(ofSize: 30, weight: .light)
+        /// Rounded, light, 21 pts
+        static let rLight21 = rounded(ofSize: 21, weight: .light)
+        /// Rounded, thin, 16 pts
+        static let rThin16 = rounded(ofSize: 16, weight: .thin)
+        /// Rounded, semibold, 18 pts
+        static let rSemibold18 = rounded(ofSize: 18, weight: .semibold)
         
         
         /// Generates a rounded system font
@@ -71,8 +77,24 @@ enum AppAppearance {
         static let small: CGFloat = 10
         /// 15 pts
         static let medium: CGFloat = 15
+        /// 18.75 pts
+        static let regular: CGFloat = 18.75
         /// 30 pts
-        static let large: CGFloat = 30
+        static let large: CGFloat = 35
+        /// 40 pts
+        static let extraLarge: CGFloat = 40
+        /// 60 pts
+        static let hyperLarge: CGFloat = 80
+    }
+    
+    
+    // MARK: - CornerRadius
+    
+    
+    /// App corner radius
+    enum CornerRadius {
+        /// 10 pts
+        static let small: CGFloat = 10
     }
     
 }
