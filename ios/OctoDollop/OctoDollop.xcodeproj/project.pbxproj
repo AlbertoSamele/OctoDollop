@@ -14,6 +14,7 @@
 		214AF21F2763F920003F2546 /* HistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214AF21E2763F920003F2546 /* HistoryViewController.swift */; };
 		214AF22127642A1D003F2546 /* UITextField+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214AF22027642A1D003F2546 /* UITextField+Ext.swift */; };
 		214AF22327642BF2003F2546 /* UIButton+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214AF22227642BF2003F2546 /* UIButton+Ext.swift */; };
+		214AF22527643213003F2546 /* UILabel+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214AF22427643213003F2546 /* UILabel+Ext.swift */; };
 		214F54CD2755A07B00901C56 /* AppAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214F54CC2755A07B00901C56 /* AppAppearance.swift */; };
 		214F54D12755A15B00901C56 /* TextLogo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214F54D02755A15B00901C56 /* TextLogo.swift */; };
 		214F54D42755A1B000901C56 /* aAlloyInk.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 214F54D32755A1B000901C56 /* aAlloyInk.ttf */; };
@@ -35,6 +36,7 @@
 		214AF21E2763F920003F2546 /* HistoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryViewController.swift; sourceTree = "<group>"; };
 		214AF22027642A1D003F2546 /* UITextField+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+Ext.swift"; sourceTree = "<group>"; };
 		214AF22227642BF2003F2546 /* UIButton+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Ext.swift"; sourceTree = "<group>"; };
+		214AF22427643213003F2546 /* UILabel+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Ext.swift"; sourceTree = "<group>"; };
 		214F54CC2755A07B00901C56 /* AppAppearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAppearance.swift; sourceTree = "<group>"; };
 		214F54D02755A15B00901C56 /* TextLogo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextLogo.swift; sourceTree = "<group>"; };
 		214F54D32755A1B000901C56 /* aAlloyInk.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = aAlloyInk.ttf; sourceTree = "<group>"; };
@@ -137,6 +139,7 @@
 				214F54DB2755AAC000901C56 /* UIView+Ext.swift */,
 				214AF22027642A1D003F2546 /* UITextField+Ext.swift */,
 				214AF22227642BF2003F2546 /* UIButton+Ext.swift */,
+				214AF22427643213003F2546 /* UILabel+Ext.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -267,6 +270,7 @@
 				214AF22127642A1D003F2546 /* UITextField+Ext.swift in Sources */,
 				21AD1159275407060033C7EF /* HomeViewController.swift in Sources */,
 				214AF22327642BF2003F2546 /* UIButton+Ext.swift in Sources */,
+				214AF22527643213003F2546 /* UILabel+Ext.swift in Sources */,
 				214AF21F2763F920003F2546 /* HistoryViewController.swift in Sources */,
 				214F54DF2755AD6000901C56 /* SegmentedControl.swift in Sources */,
 				214F54DC2755AAC000901C56 /* UIView+Ext.swift in Sources */,

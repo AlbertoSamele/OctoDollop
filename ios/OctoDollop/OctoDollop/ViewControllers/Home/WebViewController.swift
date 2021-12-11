@@ -21,7 +21,7 @@ class WebViewController: UIViewController {
     private let titleLabel = UILabel()
     /// Gathers user input
     private let textInput = UITextField()
-    /// Confirms user input and start evaluation process
+    /// Prompts the user to confirm his input and start the evaluation process
     private let actionButton = UIButton()
     /// `textInput` and `actionButton` height
     private let componentsHeight: CGFloat = 45
@@ -43,11 +43,7 @@ class WebViewController: UIViewController {
     
     private func setupUserInterface() {
         // Instructions
-        titleLabel.text = "Enter the url of the website you wish to rank"
-        titleLabel.textColor = AppAppearance.Colors.color_FFFFFF
-        titleLabel.font = AppAppearance.Fonts.rLight21
-        titleLabel.numberOfLines = 0
-        titleLabel.textAlignment = .center
+        titleLabel.configureAsInstructionslabel(title: "Enter the url of the website you wish to rank")
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(titleLabel)
         // Textfield

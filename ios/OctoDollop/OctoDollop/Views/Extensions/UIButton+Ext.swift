@@ -18,8 +18,6 @@ extension UIButton {
         setTitle(title, for: .normal)
         setTitleColor(AppAppearance.Colors.color_0B0C0B, for: .normal)
         titleLabel?.font = AppAppearance.Fonts.rSemibold18
-        
-        addShadow()
     }
     
 }

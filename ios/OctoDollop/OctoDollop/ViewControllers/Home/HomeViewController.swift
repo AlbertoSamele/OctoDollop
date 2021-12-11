@@ -48,6 +48,7 @@ class HomeViewController: UIViewController {
         collectionView.delegate = self
         collectionView.dataSource = self
         // Other
+        setupBindings()
         collectionView.register(HomeOptionCell.self, forCellWithReuseIdentifier: HomeOptionCell.identifier)
     }
 
@@ -57,6 +58,20 @@ class HomeViewController: UIViewController {
     }
 
 
+    // MARK: - Private func
+    
+    
+    private func setupBindings() {
+        segmentedPicker.onSegmentTapped = { [weak self] segmentIndex in
+            self?.collectionView.scrollToItem(
+                at: IndexPath(row: segmentIndex, section: 0),
+                at: .centeredHorizontally,
+                animated: true
+            )
+        }
+    }
+    
+    
     // MARK: - UI methods
     
     
@@ -75,6 +90,7 @@ class HomeViewController: UIViewController {
         flowLayout.minimumLineSpacing = 0
         collectionView.backgroundColor = .clear
         collectionView.isPagingEnabled = true
+        collectionView.isScrollEnabled = false
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(collectionView)
     }
