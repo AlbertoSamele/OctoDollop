@@ -8,6 +8,14 @@
 import UIKit
 
 
+// MARK: - HomeSectionProtocol
+
+
+protocol HomeSectionProtocol {
+    
+}
+
+
 // MARK: - HomeViewController
 
 

@@ -47,7 +47,7 @@ class TextLogo: UIView {
         highlightedLabel.text = "octo".uppercased()
         highlightedLabel.textColor = AppAppearance.Colors.color_49F3B1
         highlightedLabel.font = AppAppearance.Fonts.styled70
-        highlightedLabel.addShadow()
+        highlightedLabel.addShadow(opacity: 0.45)
         highlightedLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(highlightedLabel)
         // dollop

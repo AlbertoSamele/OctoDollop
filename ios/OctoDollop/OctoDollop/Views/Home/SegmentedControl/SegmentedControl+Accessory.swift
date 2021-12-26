@@ -92,7 +92,7 @@ extension SegmentedControl {
                 
             }
             UIView.animate(withDuration: 0.2) {
-                self.layer.shadowOpacity = 1
+                self.layer.shadowOpacity = 0.35
             }
         }
         
@@ -104,7 +104,6 @@ extension SegmentedControl {
                 self.selectionIndicator.transform = .identity
                     .concatenating(CGAffineTransform(translationX: direction.offset, y: 0))
                 self.selectionIndicator.alpha = 0
-                
             }
             UIView.animate(withDuration: 0.2) {
                 self.layer.shadowOpacity = 0

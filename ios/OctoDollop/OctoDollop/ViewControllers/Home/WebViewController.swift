@@ -26,7 +26,7 @@ class WebViewController: UIViewController {
     /// `textInput` and `actionButton` height
     private let componentsHeight: CGFloat = 45
     
-    
+
     // MARK: - Overrides
     
     
@@ -35,6 +35,8 @@ class WebViewController: UIViewController {
         // Styling
         setupUserInterface()
         setupConstraints()
+        // Actions
+        actionButton.addTarget(self, action: #selector(goButtonTapped), for: .touchUpInside)
     }
     
     
@@ -90,4 +92,17 @@ class WebViewController: UIViewController {
             actionButton.widthAnchor.constraint(equalToConstant: 82.5),
         ])
     }
+    
+    
+    // MARK: - Action methods
+    
+    
+    /// Starts elaboration of the webpage at the inputted URL
+    @objc private func goButtonTapped() {
+        // TODO: Error handling
+        guard let urlString = textInput.text, let url = URL(string: urlString) else { return }
+        let vc = InputPreviewViewController(url: url)
+        present(vc, animated: true)
+    }
+    
 }
