@@ -83,6 +83,7 @@ class SegmentedControl: UIView {
         }
         
         (containerStackView.arrangedSubviews[0] as? Segment)?.select(from: .none)
+        (containerStackView.arrangedSubviews[0] as? Segment)?.tintColor = selectedIconColor
     }
     
     /// Updates selected segment UI

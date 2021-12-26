@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import PhotosUI
 
 
 // MARK: - MobileViewController
@@ -13,7 +14,7 @@ import UIKit
 
 /// Displays mobile input gathering prompt
 class MobileViewController: UIViewController {
-   
+    
     // MARK: - UI properties
     
     
@@ -37,6 +38,22 @@ class MobileViewController: UIViewController {
         // Styling
         setupUserInterface()
         setupConstraints()
+        // Actions
+        actionButton.addTarget(self, action: #selector(importMedia), for: .touchUpInside)
+    }
+    
+    
+    // MARK: - Private methods
+    
+    
+    /// Lets the user import existing UI screenshots from his media library
+    @objc private func importMedia() {
+        var pickerConfig = PHPickerConfiguration()
+        pickerConfig.filter = .images
+        pickerConfig.selectionLimit = 1
+        let pickerController = PHPickerViewController(configuration: pickerConfig)
+        pickerController.delegate = self
+        present(pickerController, animated: true)
     }
     
     
@@ -90,4 +107,25 @@ class MobileViewController: UIViewController {
             imageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.5),
         ])
     }
+}
+
+
+// MARK: - MobileViewController+PHPickerViewControllerDelegate
+
+
+extension MobileViewController: PHPickerViewControllerDelegate {
+    
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        dismiss(animated: true)
+        guard let assetProvider = results.first?.itemProvider, assetProvider.canLoadObject(ofClass: UIImage.self) else { return }
+        
+        assetProvider.loadObject(ofClass: UIImage.self) { image, _ in
+            guard let uiPreview = image as? UIImage else { return }
+            DispatchQueue.main.async {
+                let inputPreviewerController = InputPreviewViewController(uiPreview: uiPreview)
+                self.present(inputPreviewerController, animated: true)
+            }
+        }
+    }
+    
 }
