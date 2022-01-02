@@ -16,14 +16,18 @@ class InputGatheringViewController: UIViewController {
     // MARK: - UI properties
     
     
-    /// Displays `image`
-    private let imageView = UIImageView()
     /// The screenshot in which UI elements should be identified
     private let image: UIImage
+    /// Displays `image`
+    private let imageView = UIImageView()
     /// Prompts the user to un-add previously identified UI elements
     private let backButton = UIButton()
     /// Prompts the user to confirm the addition of the identified UI elements
     private let confirmButton = UIButton()
+    /// Displays a transparent, resizable green overlay onscreen
+    private lazy var dynamicElementOverlay: UIView = {
+        return generateUIElementOverlay()
+    }()
     /// Button size for all rounded buttons
     private let buttonSize: CGFloat = 40
     
@@ -33,6 +37,11 @@ class InputGatheringViewController: UIViewController {
     
     /// The viewmodel
     private let viewModel = InputGatheringViewModel()
+    /// Stores the overlays that have been permanently added to the view hierarchy
+    ///
+    /// `dynamicElementOverlay` is not stored here as it gets continuously added and removed from the view hierarchy.
+    /// Added elements can always be removed thorugh undo actions
+    private var overlays = [UIView]()
     
     
     // MARK: - Inits
@@ -57,8 +66,8 @@ class InputGatheringViewController: UIViewController {
         setupUserInterface()
         setupConstraints()
         // Actions
-        imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onDrag(_:))))
-        backButton.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onBackButtonTapped)))
+        imageView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(onDrag(_:))))
+        backButton.addTarget(self, action: #selector(onBackButtonTapped), for: .touchUpInside)
         // Other
         setupBindings()
     }
@@ -68,6 +77,16 @@ class InputGatheringViewController: UIViewController {
     
     
     private func setupBindings() {
+        viewModel.updateDynamicElement = { [weak self] overlayFrame in
+            self?.dynamicElementOverlay.frame = overlayFrame
+        }
+        viewModel.saveDynamicElement = { [weak self] in
+            guard let self = self else { return }
+            let overlay = self.generateUIElementOverlay()
+            overlay.frame = self.dynamicElementOverlay.frame
+            self.view.addSubview(overlay)
+            self.dynamicElementOverlay.frame = .zero
+        }
         viewModel.dismiss = { [weak self] in
             self?.navigationController?.popViewController(animated: false)
         }
@@ -78,11 +97,15 @@ class InputGatheringViewController: UIViewController {
     
     
     private func setupUserInterface() {
+        view.isUserInteractionEnabled = true
         // Previewer
         imageView.image = image
+        imageView.isUserInteractionEnabled = true
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(imageView)
+        // UI element overlay
+        view.addSubview(dynamicElementOverlay)
         // Back button
         backButton.configureAsActionButton(image: UIImage(systemName: "arrowshape.turn.up.backward.fill", size: 17, weight: .medium))
         backButton.layer.cornerRadius = buttonSize / 2
@@ -118,13 +141,28 @@ class InputGatheringViewController: UIViewController {
         ])
     }
     
+    /// Generates a view to be used as overlay to identify UI elements
+    ///
+    /// - Returns: the styled overlay
+    private func generateUIElementOverlay() -> UIView {
+        let view = UIView()
+        view.backgroundColor = AppAppearance.Colors.color_49F3B1
+        view.alpha = 0.6
+        return view
+    }
+    
     
     // MARK: - Action methods
     
     
     @objc private func onDrag(_ sender: UIPanGestureRecognizer) {
         let coordinates = sender.location(in: view)
-        print(coordinates)
+        switch sender.state {
+            case .began: viewModel.startDrawing(at: coordinates)
+            case .changed: viewModel.drawingChanged(coordinates)
+            case .ended: viewModel.endDrawing()
+            default: break
+        }
     }
     
     /// Undoes last user action
