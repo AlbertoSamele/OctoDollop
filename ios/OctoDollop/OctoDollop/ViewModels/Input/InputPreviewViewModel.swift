@@ -30,6 +30,10 @@ class InputPreviewViewModel {
     private(set) var uiImage: UIImage?
     /// Whether the user should be identifying UI elements
     private(set) var shouldGatherInput = false
+    /// Added UI elements
+    ///
+    /// Divided into blocks, where each block represent all elements added during a single session
+    private var additionHistory: [[UIElement]] = []
     
     
     // MARK: - Binding properties
@@ -43,6 +47,10 @@ class InputPreviewViewModel {
     ///
     /// - Parameter $0: the screenshot in which the UI element should be identified
     public var identifyUIEelement: ((UIImage) -> Void)?
+    /// Callback triggered whenever all displayed UI elements should be updated
+    ///
+    /// - Parameter $0: the identified UI elements
+    public var onUpdateUI: (([UIElement]) -> Void)?
     /// Callback triggered whenever a long-running asynchronous operations starts or ends
     ///
     /// - Parameter $0: whether the operation is still running or not
@@ -88,6 +96,14 @@ class InputPreviewViewModel {
         }
     }
     
+    /// Saves the given identified UI elements
+    ///
+    /// - Parameter elements: the user identified UI elements
+    public func addElements(_ elements: [UIElement]) {
+        additionHistory.append(elements)
+        onUpdateUI?(additionHistory.flatMap{$0})
+    }
+    
     /// Dismisses the process or prompts for a new UI element to be identified depending on current app's state
     public func onSecondaryAction() {
         if let screenCap = uiImage, shouldGatherInput { identifyUIEelement?(screenCap) }
@@ -96,7 +112,11 @@ class InputPreviewViewModel {
     
     /// Undoes last action or prompts dismissal if no action can be undone
     public func undo() {
-       //TODO: implement
+        if additionHistory.count > 0 {
+            additionHistory.removeLast()
+            onUpdateUI?(additionHistory.flatMap{$0})
+        }
+        else { dismiss?() }
     }
     
 }

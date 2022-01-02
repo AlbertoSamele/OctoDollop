@@ -17,6 +17,10 @@ class InputGatheringViewModel {
     // MARK: - Binding properties
     
     
+    /// Callback triggered when the user wishes to save the currently identified UI elements
+    ///
+    /// - Parameter $0: the identified UI elements
+    public var onElementsIdentified: (([UIElement]) -> Void)?
     /// Callback triggered whenever the whole grading process should be interrupted
     public var dismiss: (() -> Void)?
     /// Callback triggered whenever the rectangle surrounding the UI element currently being identified should be updated
@@ -75,5 +79,14 @@ class InputGatheringViewModel {
             identifiedElementsCount -= 1
         }
         else { dismiss?() }
+    }
+    
+    /// Saves currently identified UI elements
+    ///
+    /// - Parameter elements: relative coordinates of the identified UI elements
+    public func saveInput(elements: [(x: Double, y: Double, width: Double, height: Double)]) {
+        let models = elements.map { UIElement(x: $0.x, y: $0.y, width: $0.width, height: $0.height) }
+        onElementsIdentified?(models)
+        dismiss?()
     }
 }

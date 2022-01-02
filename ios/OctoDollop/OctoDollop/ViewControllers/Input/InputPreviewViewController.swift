@@ -32,6 +32,8 @@ class InputPreviewViewController: UIViewController {
     private let confirmButton = UIButton()
     /// Displays a black gradient on top of `webPreviewer` and `uiPreviewer`
     private let gradientLayer = CAGradientLayer()
+    /// The identified ui elements currently added to the view hierarchy
+    private var uiElements: [UIView] = []
     /// Button size for all rounded buttons
     private let buttonSize: CGFloat = 40
     
@@ -94,8 +96,23 @@ class InputPreviewViewController: UIViewController {
         viewModel.onStartReadingInput = { [weak self] in
             self?.updateUI(animated: true)
         }
+        viewModel.onUpdateUI = { [weak self] elements in
+            guard let self = self else { return }
+            self.uiElements.forEach { $0.removeFromSuperview() }
+            self.uiElements.removeAll()
+            for element in elements {
+                let elementView = self.generateUIElementOverlay()
+                let x = element.x * self.uiPreviewer.bounds.width
+                let y = element.y * self.uiPreviewer.bounds.height
+                let width = element.width * self.uiPreviewer.bounds.width
+                let height = element.height * self.uiPreviewer.bounds.height
+                elementView.frame = CGRect(x: x, y: y, width: width, height: height)
+                self.view.addSubview(elementView)
+                self.uiElements.append(elementView)
+            }
+        }
         viewModel.identifyUIEelement = { [weak self] screen in
-            let vc = InputGatheringViewController(ui: screen)
+            let vc = InputGatheringViewController(ui: screen) { self?.viewModel.addElements($0) }
             self?.animateTransition(animateIn: false) {
                 self?.navigationController?.pushViewController(vc, animated: false)
             }
@@ -231,6 +248,16 @@ class InputPreviewViewController: UIViewController {
             confirmButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -buttonPadding),
             confirmButton.widthAnchor.constraint(equalToConstant: 3*buttonSize),
         ])
+    }
+    
+    /// Generates a view to be used as overlay to identify UI elements
+    ///
+    /// - Returns: the styled overlay
+    private func generateUIElementOverlay() -> UIView {
+        let view = UIView()
+        view.backgroundColor = AppAppearance.Colors.color_49F3B1
+        view.alpha = 0.6
+        return view
     }
     
     

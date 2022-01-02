@@ -38,7 +38,7 @@ class InputGatheringViewController: UIViewController {
     
     
     /// The viewmodel
-    private let viewModel = InputGatheringViewModel()
+    private let viewModel: InputGatheringViewModel
     /// Stores the overlays that have been permanently added to the view hierarchy
     ///
     /// `dynamicElementOverlay`and `commandOverlay` are not stored here
@@ -51,9 +51,13 @@ class InputGatheringViewController: UIViewController {
     
     /// Class init
     ///
-    /// - Parameter ui: the screen in which UI elements should be identified
-    init(ui: UIImage) {
+    /// - Parameters:
+    ///   - ui: the screen in which UI elements should be identified
+    ///   - onElementsAdded: callback triggered once the user wishes to save all the identified UI elements
+    init(ui: UIImage, _ onElementsAdded: @escaping (([UIElement]) -> Void)) {
         image = ui
+        viewModel = InputGatheringViewModel()
+        viewModel.onElementsIdentified = onElementsAdded
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -76,6 +80,7 @@ class InputGatheringViewController: UIViewController {
         imageView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(onDrag(_:))))
         imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onTap)))
         backButton.addTarget(self, action: #selector(onBackButtonTapped), for: .touchUpInside)
+        confirmButton.addTarget(self, action: #selector(onConfirmButtonTapped), for: .touchUpInside)
         // Other
         setupBindings()
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
@@ -217,6 +222,19 @@ class InputGatheringViewController: UIViewController {
     
     /// Undoes last user action
     @objc private func onBackButtonTapped() { viewModel.undo() }
+    
+    /// Confirms and saves user input
+    @objc private func onConfirmButtonTapped() {
+        var coordinates: [(x: Double, y: Double, width: Double, height: Double)] = []
+        for overlay in uiOverlays {
+            let x = overlay.frame.origin.x / imageView.bounds.width
+            let y = overlay.frame.origin.y / imageView.bounds.height
+            let width = overlay.frame.width / imageView.bounds.width
+            let height = overlay.frame.height / imageView.bounds.height
+            coordinates.append((x: x, y: y, width: width, height: height))
+        }
+        viewModel.saveInput(elements: coordinates)
+    }
 }
 
 
@@ -224,7 +242,5 @@ class InputGatheringViewController: UIViewController {
 
 
 extension InputGatheringViewController: UIScrollViewDelegate {
-    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        return imageView
-    }
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? { return imageView }
 }
