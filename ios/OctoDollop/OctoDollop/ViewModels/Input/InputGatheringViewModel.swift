@@ -25,6 +25,8 @@ class InputGatheringViewModel {
     public var updateDynamicElement: ((CGRect) -> Void)?
     /// Callback triggered whenever the rectangle surrounding the UI element currently being identified should be saved
     public var saveDynamicElement: (() -> Void)?
+    /// Callback triggered whenever the last identified UI element rectangle should be removed
+    public var removeLast: (() -> Void)?
     
     
     // MARK: - Datasource properties
@@ -32,6 +34,8 @@ class InputGatheringViewModel {
     
     /// The origin of the rectangle surrounding the UI element currently being identified
     public var dynamicOrigin: CGPoint?
+    /// The number of the UI elements identified by the user
+    private var identifiedElementsCount = 0
     
     
     // MARK: - Public methods
@@ -40,7 +44,10 @@ class InputGatheringViewModel {
     /// Starts identifying a UI element
     ///
     /// - Parameter point: the screen's point in which the user started identifying the element
-    public func startDrawing(at point: CGPoint) { dynamicOrigin = point }
+    public func startDrawing(at point: CGPoint) {
+        dynamicOrigin = point
+        updateDynamicElement?(CGRect(origin: point, size: .zero))
+    }
     
     /// Updates the rectangle surrending the UI element currently being identified
     ///
@@ -57,12 +64,16 @@ class InputGatheringViewModel {
     /// Saves the current rectangle surrounding the identified UI element
     public func endDrawing() {
         dynamicOrigin = nil
+        identifiedElementsCount += 1
         saveDynamicElement?()
     }
     
     /// Undoes last action or prompts dismissal if no action can be undone
     public func undo() {
-       //TODO: implement
-        dismiss?()
+        if identifiedElementsCount > 0 {
+            removeLast?()
+            identifiedElementsCount -= 1
+        }
+        else { dismiss?() }
     }
 }

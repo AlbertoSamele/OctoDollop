@@ -20,6 +20,8 @@ class InputGatheringViewController: UIViewController {
     private let image: UIImage
     /// Displays `image`
     private let imageView = UIImageView()
+    /// Wraps `imageView` to enable zooming and scrolling
+    private let scrollView = UIScrollView()
     /// Prompts the user to un-add previously identified UI elements
     private let backButton = UIButton()
     /// Prompts the user to confirm the addition of the identified UI elements
@@ -39,14 +41,17 @@ class InputGatheringViewController: UIViewController {
     private let viewModel = InputGatheringViewModel()
     /// Stores the overlays that have been permanently added to the view hierarchy
     ///
-    /// `dynamicElementOverlay` is not stored here as it gets continuously added and removed from the view hierarchy.
+    /// `dynamicElementOverlay`and `commandOverlay` are not stored here
     /// Added elements can always be removed thorugh undo actions
-    private var overlays = [UIView]()
+    private var uiOverlays = [UIView]()
     
     
     // MARK: - Inits
     
     
+    /// Class init
+    ///
+    /// - Parameter ui: the screen in which UI elements should be identified
     init(ui: UIImage) {
         image = ui
         super.init(nibName: nil, bundle: nil)
@@ -62,14 +67,20 @@ class InputGatheringViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        // Delegates
+        scrollView.delegate = self
         // Styling
         setupUserInterface()
         setupConstraints()
         // Actions
         imageView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(onDrag(_:))))
+        imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onTap)))
         backButton.addTarget(self, action: #selector(onBackButtonTapped), for: .touchUpInside)
         // Other
         setupBindings()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            self.animateCommandOverlay(animateIn: false)
+        }
     }
     
     
@@ -84,8 +95,13 @@ class InputGatheringViewController: UIViewController {
             guard let self = self else { return }
             let overlay = self.generateUIElementOverlay()
             overlay.frame = self.dynamicElementOverlay.frame
-            self.view.addSubview(overlay)
+            self.imageView.addSubview(overlay)
             self.dynamicElementOverlay.frame = .zero
+            self.uiOverlays.append(overlay)
+        }
+        viewModel.removeLast = { [weak self] in
+            let last = self?.uiOverlays.removeLast()
+            last?.removeFromSuperview()
         }
         viewModel.dismiss = { [weak self] in
             self?.navigationController?.popViewController(animated: false)
@@ -98,14 +114,27 @@ class InputGatheringViewController: UIViewController {
     
     private func setupUserInterface() {
         view.isUserInteractionEnabled = true
+        // Scrollview
+        scrollView.contentSize = image.size
+        let scaleWidth = UIScreen.main.bounds.width / scrollView.contentSize.width
+        let scaleHeight = UIScreen.main.bounds.height / scrollView.contentSize.height
+        scrollView.minimumZoomScale = min(scaleWidth, scaleHeight)
+        scrollView.maximumZoomScale = 1
+        scrollView.zoomScale = scrollView.minimumZoomScale
+        scrollView.contentOffset = .zero
+        scrollView.bounces = false
+        scrollView.alwaysBounceVertical = false
+        scrollView.alwaysBounceHorizontal = false
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(scrollView)
         // Previewer
         imageView.image = image
-        imageView.isUserInteractionEnabled = true
         imageView.contentMode = .scaleAspectFit
+        imageView.isUserInteractionEnabled = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(imageView)
+        scrollView.addSubview(imageView)
         // UI element overlay
-        view.addSubview(dynamicElementOverlay)
+        imageView.addSubview(dynamicElementOverlay)
         // Back button
         backButton.configureAsActionButton(image: UIImage(systemName: "arrowshape.turn.up.backward.fill", size: 17, weight: .medium))
         backButton.layer.cornerRadius = buttonSize / 2
@@ -123,11 +152,16 @@ class InputGatheringViewController: UIViewController {
         let buttonPadding = AppAppearance.Spacing.medium
         
         NSLayoutConstraint.activate([
-            // Previewer
-            imageView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            imageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            imageView.topAnchor.constraint(equalTo: view.topAnchor),
-            imageView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            // Scrollview
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            // Image view
+            imageView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            imageView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            imageView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            imageView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             // Back button
             backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: buttonPadding),
             backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: buttonPadding),
@@ -151,12 +185,25 @@ class InputGatheringViewController: UIViewController {
         return view
     }
     
+    /// Animates in or out button components
+    ///
+    /// - Parameter animateIn: whether the overlay should be animated in or not
+    private func animateCommandOverlay(animateIn: Bool) {
+        UIView.animate(withDuration: 0.2) {
+            self.backButton.alpha = animateIn ? 1 : 0
+            self.confirmButton.alpha = animateIn ? 1 : 0
+        }
+    }
+    
     
     // MARK: - Action methods
     
     
+    /// Handles drag gestures
+    ///
+    /// - Parameter sender: the drag gesture recognizer
     @objc private func onDrag(_ sender: UIPanGestureRecognizer) {
-        let coordinates = sender.location(in: view)
+        let coordinates = sender.location(in: imageView)
         switch sender.state {
             case .began: viewModel.startDrawing(at: coordinates)
             case .changed: viewModel.drawingChanged(coordinates)
@@ -165,6 +212,19 @@ class InputGatheringViewController: UIViewController {
         }
     }
     
+    /// Hides or shows command buttons
+    @objc private func onTap() { animateCommandOverlay(animateIn: backButton.alpha == 0) }
+    
     /// Undoes last user action
     @objc private func onBackButtonTapped() { viewModel.undo() }
+}
+
+
+// MARK: - InputGatheringViewController+UIScrollViewDelegate
+
+
+extension InputGatheringViewController: UIScrollViewDelegate {
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return imageView
+    }
 }
