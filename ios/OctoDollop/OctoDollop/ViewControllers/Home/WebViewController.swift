@@ -101,8 +101,10 @@ class WebViewController: UIViewController {
     @objc private func goButtonTapped() {
         // TODO: Error handling
         guard let urlString = textInput.text, let url = URL(string: urlString) else { return }
-        let vc = InputPreviewViewController(url: url)
-        present(vc, animated: true)
+        let inputViewController = InputPreviewViewController(url: url)
+        let navController = UINavigationController(rootViewController: inputViewController)
+        navController.modalPresentationStyle = .fullScreen
+        present(navController, animated: true)
     }
     
 }
