@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		21029303278133170010777D /* InputGatheringViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21029302278133170010777D /* InputGatheringViewModel.swift */; };
+		213384CD2781F7290036B54C /* UIElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213384CC2781F7290036B54C /* UIElement.swift */; };
 		214AF2152763E8DA003F2546 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214AF2142763E8DA003F2546 /* WebViewController.swift */; };
 		214AF2172763E949003F2546 /* HomeOptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214AF2162763E949003F2546 /* HomeOptionCell.swift */; };
 		214AF21B2763F357003F2546 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214AF21A2763F357003F2546 /* HomeViewModel.swift */; };
@@ -29,10 +31,13 @@
 		21AD1159275407060033C7EF /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21AD1158275407060033C7EF /* HomeViewController.swift */; };
 		21AD115E275407060033C7EF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 21AD115D275407060033C7EF /* Assets.xcassets */; };
 		21AD1161275407060033C7EF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 21AD115F275407060033C7EF /* LaunchScreen.storyboard */; };
+		21AD7C68277CE9B40036DC0D /* InputGatheringViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21AD7C67277CE9B40036DC0D /* InputGatheringViewController.swift */; };
 		21ECE593275D8EA100364631 /* SegmentedControl+Accessory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21ECE592275D8EA100364631 /* SegmentedControl+Accessory.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		21029302278133170010777D /* InputGatheringViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputGatheringViewModel.swift; sourceTree = "<group>"; };
+		213384CC2781F7290036B54C /* UIElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIElement.swift; sourceTree = "<group>"; };
 		214AF2142763E8DA003F2546 /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		214AF2162763E949003F2546 /* HomeOptionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeOptionCell.swift; sourceTree = "<group>"; };
 		214AF21A2763F357003F2546 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
@@ -57,6 +62,7 @@
 		21AD115D275407060033C7EF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		21AD1160275407060033C7EF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		21AD1162275407060033C7EF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		21AD7C67277CE9B40036DC0D /* InputGatheringViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputGatheringViewController.swift; sourceTree = "<group>"; };
 		21ECE592275D8EA100364631 /* SegmentedControl+Accessory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SegmentedControl+Accessory.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -71,6 +77,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		213384CB2781F70F0036B54C /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				213384CC2781F7290036B54C /* UIElement.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		214AF2182763F332003F2546 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
@@ -169,6 +183,7 @@
 			isa = PBXGroup;
 			children = (
 				21885C89276816EE00B94A65 /* InputPreviewViewController.swift */,
+				21AD7C67277CE9B40036DC0D /* InputGatheringViewController.swift */,
 			);
 			path = Input;
 			sourceTree = "<group>";
@@ -177,6 +192,7 @@
 			isa = PBXGroup;
 			children = (
 				21885C8C276817BC00B94A65 /* InputPreviewViewModel.swift */,
+				21029302278133170010777D /* InputGatheringViewModel.swift */,
 			);
 			path = Input;
 			sourceTree = "<group>";
@@ -202,6 +218,7 @@
 			children = (
 				21AD1154275407060033C7EF /* AppDelegate.swift */,
 				21AD1156275407060033C7EF /* SceneDelegate.swift */,
+				213384CB2781F70F0036B54C /* Models */,
 				214F54CB2755A05700901C56 /* Appearance */,
 				214F54CE2755A13A00901C56 /* Views */,
 				214AF2182763F332003F2546 /* ViewModels */,
@@ -304,12 +321,15 @@
 				214F54DF2755AD6000901C56 /* SegmentedControl.swift in Sources */,
 				21885C8F27681C1600B94A65 /* UIEdgeInsets+Ext.swift in Sources */,
 				214F54DC2755AAC000901C56 /* UIView+Ext.swift in Sources */,
+				213384CD2781F7290036B54C /* UIElement.swift in Sources */,
 				21AD1155275407060033C7EF /* AppDelegate.swift in Sources */,
 				21AD1157275407060033C7EF /* SceneDelegate.swift in Sources */,
 				214AF21D2763F8FE003F2546 /* MobileViewController.swift in Sources */,
+				21AD7C68277CE9B40036DC0D /* InputGatheringViewController.swift in Sources */,
 				21ECE593275D8EA100364631 /* SegmentedControl+Accessory.swift in Sources */,
 				21885C8A276816EE00B94A65 /* InputPreviewViewController.swift in Sources */,
 				214F54CD2755A07B00901C56 /* AppAppearance.swift in Sources */,
+				21029303278133170010777D /* InputGatheringViewModel.swift in Sources */,
 				21885C8D276817BC00B94A65 /* InputPreviewViewModel.swift in Sources */,
 				214AF2172763E949003F2546 /* HomeOptionCell.swift in Sources */,
 			);

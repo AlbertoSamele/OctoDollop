@@ -20,7 +20,7 @@ class InputPreviewViewController: UIViewController {
     
     /// Depending on the current state, prompts the user to either identify a new UI element or close the rating process alotgether
     private let xButton = UIButton()
-    /// Prompts the user to un-add previously identified UI elements
+    /// Prompts the user to undo previous action
     private let backButton = UIButton()
     /// Previews web UI to be rated
     ///
@@ -32,6 +32,8 @@ class InputPreviewViewController: UIViewController {
     private let confirmButton = UIButton()
     /// Displays a black gradient on top of `webPreviewer` and `uiPreviewer`
     private let gradientLayer = CAGradientLayer()
+    /// The identified ui elements currently added to the view hierarchy
+    private var uiElements: [UIView] = []
     /// Button size for all rounded buttons
     private let buttonSize: CGFloat = 40
     
@@ -74,10 +76,15 @@ class InputPreviewViewController: UIViewController {
         updateUI(animated: false)
         // Actions
         xButton.addTarget(self, action: #selector(onXButtonTapped), for: .touchUpInside)
-        confirmButton.addTarget(self, action: #selector(confirmSelection), for: .touchUpInside)
+        confirmButton.addTarget(self, action: #selector(onConfirmButtonTapped), for: .touchUpInside)
         backButton.addTarget(self, action: #selector(onBackButtonTapped), for: .touchUpInside)
         // Other
         setupBindings()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        animateTransition(animateIn: true)
     }
     
     
@@ -89,27 +96,37 @@ class InputPreviewViewController: UIViewController {
         viewModel.onStartReadingInput = { [weak self] in
             self?.updateUI(animated: true)
         }
-        viewModel.identifyUIEelement = {
-            // TODO: present input gathering vc
+        viewModel.onUpdateUI = { [weak self] elements in
+            guard let self = self else { return }
+            self.uiElements.forEach { $0.removeFromSuperview() }
+            self.uiElements.removeAll()
+            for element in elements {
+                let elementView = self.generateUIElementOverlay()
+                let x = element.x * self.uiPreviewer.bounds.width
+                let y = element.y * self.uiPreviewer.bounds.height
+                let width = element.width * self.uiPreviewer.bounds.width
+                let height = element.height * self.uiPreviewer.bounds.height
+                elementView.frame = CGRect(x: x, y: y, width: width, height: height)
+                self.view.addSubview(elementView)
+                self.uiElements.append(elementView)
+            }
         }
-        viewModel.dismiss = {
-            //TODO: display dismiss confirmation popup
+        viewModel.identifyUIEelement = { [weak self] screen in
+            let vc = InputGatheringViewController(ui: screen) { self?.viewModel.addElements($0) }
+            self?.animateTransition(animateIn: false) {
+                self?.navigationController?.pushViewController(vc, animated: false)
+            }
         }
-    }
-    
-    
-    /// Confirms current user input
-    ///
-    /// Either starts UI elaboration or the UI input gathering process
-    @objc private func confirmSelection() {
-        if viewModel.shouldGatherInput {
-            // TODO: HTTP request - elaboration
-        } else {
-            webPreviewer.takeSnapshot(with: nil) { [weak self] screencap, error in
+        viewModel.captureWebpage = { [weak self] completion in
+            self?.webPreviewer.takeSnapshot(with: nil) { screencap, error in
                 // TODO: Error handling
                 guard let screencap = screencap else { return }
-                self?.viewModel.setTargetUI(screencap)
+                completion(screencap)
             }
+        }
+        viewModel.dismiss = { [weak self] in
+            // TODO: Dismiss confirmation popup
+            self?.dismiss(animated: true)
         }
     }
     
@@ -137,7 +154,34 @@ class InputPreviewViewController: UIViewController {
         }
     }
     
+    /// Animates view controller in/out during transitions (pushes, pops, etc)
+    ///
+    /// - Parameters:
+    ///   - animateIn: whether the ui elements should be animated in or not
+    ///   - completion: callback triggered once all animations finished playing
+    private func animateTransition(animateIn: Bool, _ completion: (() -> Void)? = nil) {
+        UIView.animate(withDuration: 0.2) {
+            self.gradientLayer.opacity = animateIn ? 1 : 0
+            var inTransforms: CGAffineTransform = .identity
+            if self.viewModel.shouldGatherInput { inTransforms = inTransforms.concatenating(CGAffineTransform(rotationAngle: .pi/4)) }
+            self.xButton.transform = animateIn ?
+            inTransforms : self.xButton.transform.concatenating(CGAffineTransform(scaleX: 0.001, y: 0.001))
+        }
+        UIView.animate(
+            withDuration: 0.2,
+            delay: 0.05,
+            animations: {
+                let translation = self.buttonSize + 1.5*AppAppearance.Spacing.medium
+                self.backButton.transform = animateIn ?
+                    .identity :
+                    .identity.concatenating(CGAffineTransform(translationX: -translation, y: 0))
+            },
+            completion: { _ in completion?() }
+        )
+    }
+    
     private func setupUserInterface() {
+        navigationController?.setNavigationBarHidden(true, animated: false)
         view.backgroundColor = AppAppearance.Colors.color_0B0C0B
         // Web UI previewer
         webPreviewer.translatesAutoresizingMaskIntoConstraints = false
@@ -146,27 +190,20 @@ class InputPreviewViewController: UIViewController {
         uiPreviewer.contentMode = .scaleAspectFit
         uiPreviewer.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(uiPreviewer)
-        // Buttons styling
-        for button in [xButton, backButton, confirmButton] {
-            button.contentMode = .scaleAspectFit
-            button.tintColor = AppAppearance.Colors.color_0B0C0B
-            button.backgroundColor = AppAppearance.Colors.color_49F3B1
-            button.layer.cornerRadius = buttonSize / 2
-            button.addShadow()
-            button.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(button)
-        }
         // Close button
-        xButton.setImage(UIImage(systemName: "xmark", size: 17, weight: .bold), for: .normal)
+        xButton.configureAsActionButton(image: UIImage(systemName: "xmark", size: 17, weight: .bold))
+        xButton.layer.cornerRadius = buttonSize / 2
+        xButton.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(xButton)
         // Back button
-        backButton.setImage(UIImage(systemName: "arrowshape.turn.up.backward.fill", size: 17, weight: .medium), for: .normal)
+        backButton.configureAsActionButton(image: UIImage(systemName: "arrowshape.turn.up.backward.fill", size: 17, weight: .medium))
         backButton.layer.cornerRadius = buttonSize / 2
+        backButton.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(backButton)
         // Confirm button
-        confirmButton.setTitleColor(AppAppearance.Colors.color_0B0C0B, for: .normal)
-        confirmButton.layer.cornerRadius = buttonSize / 2
-        confirmButton.titleLabel?.font = AppAppearance.Fonts.rSemibold18
-        confirmButton.backgroundColor = AppAppearance.Colors.color_49F3B1
+        confirmButton.configureAsActionButton(title: nil)
         confirmButton.addShadow()
+        confirmButton.layer.cornerRadius = buttonSize / 2
         confirmButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(confirmButton)
         // Gradient
@@ -209,8 +246,18 @@ class InputPreviewViewController: UIViewController {
             confirmButton.heightAnchor.constraint(equalToConstant: buttonSize),
             confirmButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -buttonPadding),
             confirmButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -buttonPadding),
-            confirmButton.widthAnchor.constraint(equalToConstant: 3*buttonSize)
+            confirmButton.widthAnchor.constraint(equalToConstant: 3*buttonSize),
         ])
+    }
+    
+    /// Generates a view to be used as overlay to identify UI elements
+    ///
+    /// - Returns: the styled overlay
+    private func generateUIElementOverlay() -> UIView {
+        let view = UIView()
+        view.backgroundColor = AppAppearance.Colors.color_49F3B1
+        view.alpha = 0.6
+        return view
     }
     
     
@@ -218,11 +265,12 @@ class InputPreviewViewController: UIViewController {
     
     
     /// Prompts for dismissal or for input gathering depending on current state
-    @objc private func onXButtonTapped() {
-        if !viewModel.shouldGatherInput { dismiss(animated: true) }
-    }
+    @objc private func onXButtonTapped() { viewModel.onSecondaryAction() }
     
     /// Undoes last user action
     @objc private func onBackButtonTapped() { viewModel.undo() }
+    
+    /// Confirms current user input
+    @objc private func onConfirmButtonTapped() { viewModel.confirmInput() }
     
 }

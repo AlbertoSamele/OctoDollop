@@ -122,8 +122,10 @@ extension MobileViewController: PHPickerViewControllerDelegate {
         assetProvider.loadObject(ofClass: UIImage.self) { image, _ in
             guard let uiPreview = image as? UIImage else { return }
             DispatchQueue.main.async {
-                let inputPreviewerController = InputPreviewViewController(uiPreview: uiPreview)
-                self.present(inputPreviewerController, animated: true)
+                let inputViewController = InputPreviewViewController(uiPreview: uiPreview)
+                let navController = UINavigationController(rootViewController: inputViewController)
+                navController.modalPresentationStyle = .fullScreen
+                self.present(navController, animated: true)
             }
         }
     }

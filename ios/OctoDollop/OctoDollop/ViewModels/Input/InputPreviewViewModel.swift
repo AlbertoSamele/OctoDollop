@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import UIKit
+import UIKit.UIImage
 
 
 // MARK: - InputPreviewViewModel
@@ -30,6 +30,10 @@ class InputPreviewViewModel {
     private(set) var uiImage: UIImage?
     /// Whether the user should be identifying UI elements
     private(set) var shouldGatherInput = false
+    /// Added UI elements
+    ///
+    /// Divided into blocks, where each block represent all elements added during a single session
+    private var additionHistory: [[UIElement]] = []
     
     
     // MARK: - Binding properties
@@ -40,7 +44,21 @@ class InputPreviewViewModel {
     /// Callback triggered whenever the whole grading process should be interrupted
     public var dismiss: (() -> Void)?
     /// Callback triggered whenever the user should be prompted to identify a new UI element
-    public var identifyUIEelement: (() -> Void)?
+    ///
+    /// - Parameter $0: the screenshot in which the UI element should be identified
+    public var identifyUIEelement: ((UIImage) -> Void)?
+    /// Callback triggered whenever all displayed UI elements should be updated
+    ///
+    /// - Parameter $0: the identified UI elements
+    public var onUpdateUI: (([UIElement]) -> Void)?
+    /// Callback triggered whenever a long-running asynchronous operations starts or ends
+    ///
+    /// - Parameter $0: whether the operation is still running or not
+    public var onLoadingChanged: ((Bool) -> Void)?
+    /// Callback triggered whenever a UI should be captured from the currently displayed webpage
+    ///
+    /// - Returns: completion handler to be called once the screenshot has been correctly captured
+    public var captureWebpage: ((@escaping (UIImage) -> Void) -> Void)?
     
     
     // MARK: - Inits
@@ -64,18 +82,41 @@ class InputPreviewViewModel {
     // MARK: - Public methods
     
     
-    /// Updates the datasource screen where the UI elements should be identified
+    /// Confirms current user input, either prompting a screen capture or sending identified UI elements for elaboration
+    public func confirmInput() {
+        if shouldGatherInput {
+            onLoadingChanged?(true)
+            // TODO: Network call
+        } else {
+            captureWebpage?() { [weak self] screencap in
+                self?.uiImage = screencap
+                self?.shouldGatherInput = true
+                self?.onStartReadingInput?()
+            }
+        }
+    }
+    
+    /// Saves the given identified UI elements
     ///
-    /// - Parameter image: the target UI screen
-    public func setTargetUI(_ image: UIImage) {
-        shouldGatherInput = true
-        uiImage = image
-        onStartReadingInput?()
+    /// - Parameter elements: the user identified UI elements
+    public func addElements(_ elements: [UIElement]) {
+        additionHistory.append(elements)
+        onUpdateUI?(additionHistory.flatMap{$0})
+    }
+    
+    /// Dismisses the process or prompts for a new UI element to be identified depending on current app's state
+    public func onSecondaryAction() {
+        if let screenCap = uiImage, shouldGatherInput { identifyUIEelement?(screenCap) }
+        else { dismiss?() }
     }
     
     /// Undoes last action or prompts dismissal if no action can be undone
     public func undo() {
-       //TODO: implement
+        if additionHistory.count > 0 {
+            additionHistory.removeLast()
+            onUpdateUI?(additionHistory.flatMap{$0})
+        }
+        else { dismiss?() }
     }
     
 }
