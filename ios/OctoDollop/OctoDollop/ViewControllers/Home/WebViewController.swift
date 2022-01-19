@@ -37,6 +37,7 @@ class WebViewController: UIViewController {
         setupConstraints()
         // Actions
         actionButton.addTarget(self, action: #selector(goButtonTapped), for: .touchUpInside)
+        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
     }
     
     
@@ -106,5 +107,8 @@ class WebViewController: UIViewController {
         navController.modalPresentationStyle = .fullScreen
         present(navController, animated: true)
     }
+    
+    /// Resigns first responder
+    @objc private func dismissKeyboard() { view.endEditing(true) }
     
 }
