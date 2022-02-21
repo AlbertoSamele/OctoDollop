@@ -8,23 +8,27 @@
 import UIKit
 
 
-// MARK: - WebViewController
+// MARK: - ScreenGatheringViewController
 
 
-/// Displays web input gathering prompt
-class WebViewController: UIViewController {
+/// Prompts the user to select a screen to be rated
+class ScreenInputViewController: UIViewController {
     
     // MARK: - UI properties
     
     
     /// Displays input gathering instructions
     private let titleLabel = UILabel()
+    /// Displays "or" text separator
+    private let separatorLabel = UILabel()
     /// Gathers user input
     private let textInput = UITextField()
     /// Prompts the user to confirm his input and start the evaluation process
-    private let actionButton = UIButton()
-    /// `textInput` and `actionButton` height
-    private let componentsHeight: CGFloat = 45
+    private let searchButton = UIButton()
+    /// Prompts the user to import a screenshot from library and start the evaluation process
+    private let importButton = UIButton()
+    /// `searchButton` height
+    private let actionHeight: CGFloat = 30
     
 
     // MARK: - Overrides
@@ -36,7 +40,7 @@ class WebViewController: UIViewController {
         setupUserInterface()
         setupConstraints()
         // Actions
-        actionButton.addTarget(self, action: #selector(goButtonTapped), for: .touchUpInside)
+        searchButton.addTarget(self, action: #selector(goButtonTapped), for: .touchUpInside)
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
     }
     
@@ -56,7 +60,8 @@ class WebViewController: UIViewController {
             string: "URL",
             attributes: [NSAttributedString.Key.foregroundColor:textfieldColor!, NSAttributedString.Key.font:textfieldFont]
         )
-        textInput.addPadding(.both, amount: AppAppearance.Spacing.medium)
+        textInput.addPadding(.left, amount: AppAppearance.Spacing.medium)
+        textInput.addPadding(.right, amount: AppAppearance.Spacing.extraLarge * 1.2)
         textInput.backgroundColor = .clear
         textInput.font = textfieldFont
         textInput.textColor = textfieldColor
@@ -66,10 +71,21 @@ class WebViewController: UIViewController {
         textInput.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(textInput)
         // Action button
-        actionButton.configureAsActionButton(title: "Go")
-        actionButton.layer.cornerRadius = componentsHeight / 2
-        actionButton.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(actionButton)
+        searchButton.configureAsActionButton(image: UIImage(systemName: "arrow.right", size: 13, weight: .heavy))
+        searchButton.addShadow()
+        searchButton.layer.cornerRadius = actionHeight / 2
+        searchButton.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(searchButton)
+        // Separator
+        separatorLabel.configureAsInstructionslabel(title: "- or -")
+        separatorLabel.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(separatorLabel)
+        // Import button
+        importButton.configureAsActionButton(title: "Import")
+        importButton.addShadow()
+        importButton.layer.cornerRadius = (actionHeight * 1.5) / 2
+        importButton.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(importButton)
     }
     
     private func setupConstraints() {
@@ -85,12 +101,20 @@ class WebViewController: UIViewController {
             textInput.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
             textInput.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
             textInput.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: verticalPadding),
-            textInput.heightAnchor.constraint(equalToConstant: componentsHeight),
-            // Button
-            actionButton.centerXAnchor.constraint(equalTo: titleLabel.centerXAnchor),
-            actionButton.topAnchor.constraint(equalTo: textInput.bottomAnchor, constant: verticalPadding),
-            actionButton.heightAnchor.constraint(equalTo: textInput.heightAnchor),
-            actionButton.widthAnchor.constraint(equalToConstant: 82.5),
+            textInput.heightAnchor.constraint(equalTo: searchButton.heightAnchor, multiplier: 1.5),
+            // Search button
+            searchButton.centerYAnchor.constraint(equalTo: textInput.centerYAnchor),
+            searchButton.trailingAnchor.constraint(equalTo: textInput.trailingAnchor, constant: -AppAppearance.Spacing.small),
+            searchButton.heightAnchor.constraint(equalToConstant: actionHeight),
+            searchButton.widthAnchor.constraint(equalTo: searchButton.heightAnchor),
+            // Separator
+            separatorLabel.centerXAnchor.constraint(equalTo: titleLabel.centerXAnchor),
+            separatorLabel.topAnchor.constraint(equalTo: textInput.bottomAnchor, constant: verticalPadding),
+            // Import button
+            importButton.centerXAnchor.constraint(equalTo: separatorLabel.centerXAnchor),
+            importButton.topAnchor.constraint(equalTo: separatorLabel.bottomAnchor, constant: verticalPadding),
+            importButton.heightAnchor.constraint(equalToConstant: actionHeight*1.5),
+            importButton.widthAnchor.constraint(equalToConstant: 150),
         ])
     }
     

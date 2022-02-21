@@ -26,6 +26,10 @@ class SegmentedControl: UIView {
     // MARK: - UI properties
     
     
+    /// The spacing in between segments
+    public var spacing: CGFloat = 0 {
+        didSet { containerStackView.spacing = spacing }
+    }
     /// Segment icon selected tint color
     private let selectedIconColor = AppAppearance.Colors.color_0B0C0B
     /// Segment icon deselected tint color
@@ -116,6 +120,7 @@ class SegmentedControl: UIView {
         containerStackView.axis = .horizontal
         containerStackView.alignment = .center
         containerStackView.distribution = .equalSpacing
+        containerStackView.spacing = spacing
         containerStackView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(containerStackView)
     }

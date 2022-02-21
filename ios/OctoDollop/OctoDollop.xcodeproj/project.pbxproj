@@ -9,10 +9,9 @@
 /* Begin PBXBuildFile section */
 		21029303278133170010777D /* InputGatheringViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21029302278133170010777D /* InputGatheringViewModel.swift */; };
 		213384CD2781F7290036B54C /* UIElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213384CC2781F7290036B54C /* UIElement.swift */; };
-		214AF2152763E8DA003F2546 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214AF2142763E8DA003F2546 /* WebViewController.swift */; };
+		214AF2152763E8DA003F2546 /* ScreenInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214AF2142763E8DA003F2546 /* ScreenInputViewController.swift */; };
 		214AF2172763E949003F2546 /* HomeOptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214AF2162763E949003F2546 /* HomeOptionCell.swift */; };
 		214AF21B2763F357003F2546 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214AF21A2763F357003F2546 /* HomeViewModel.swift */; };
-		214AF21D2763F8FE003F2546 /* MobileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214AF21C2763F8FE003F2546 /* MobileViewController.swift */; };
 		214AF21F2763F920003F2546 /* HistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214AF21E2763F920003F2546 /* HistoryViewController.swift */; };
 		214AF22127642A1D003F2546 /* UITextField+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214AF22027642A1D003F2546 /* UITextField+Ext.swift */; };
 		214AF22327642BF2003F2546 /* UIButton+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214AF22227642BF2003F2546 /* UIButton+Ext.swift */; };
@@ -38,10 +37,9 @@
 /* Begin PBXFileReference section */
 		21029302278133170010777D /* InputGatheringViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputGatheringViewModel.swift; sourceTree = "<group>"; };
 		213384CC2781F7290036B54C /* UIElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIElement.swift; sourceTree = "<group>"; };
-		214AF2142763E8DA003F2546 /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
+		214AF2142763E8DA003F2546 /* ScreenInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenInputViewController.swift; sourceTree = "<group>"; };
 		214AF2162763E949003F2546 /* HomeOptionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeOptionCell.swift; sourceTree = "<group>"; };
 		214AF21A2763F357003F2546 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
-		214AF21C2763F8FE003F2546 /* MobileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileViewController.swift; sourceTree = "<group>"; };
 		214AF21E2763F920003F2546 /* HistoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryViewController.swift; sourceTree = "<group>"; };
 		214AF22027642A1D003F2546 /* UITextField+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+Ext.swift"; sourceTree = "<group>"; };
 		214AF22227642BF2003F2546 /* UIButton+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Ext.swift"; sourceTree = "<group>"; };
@@ -150,8 +148,7 @@
 			isa = PBXGroup;
 			children = (
 				21AD1158275407060033C7EF /* HomeViewController.swift */,
-				214AF2142763E8DA003F2546 /* WebViewController.swift */,
-				214AF21C2763F8FE003F2546 /* MobileViewController.swift */,
+				214AF2142763E8DA003F2546 /* ScreenInputViewController.swift */,
 				214AF21E2763F920003F2546 /* HistoryViewController.swift */,
 			);
 			path = Home;
@@ -311,7 +308,7 @@
 			files = (
 				214F54D12755A15B00901C56 /* TextLogo.swift in Sources */,
 				214AF21B2763F357003F2546 /* HomeViewModel.swift in Sources */,
-				214AF2152763E8DA003F2546 /* WebViewController.swift in Sources */,
+				214AF2152763E8DA003F2546 /* ScreenInputViewController.swift in Sources */,
 				214AF22127642A1D003F2546 /* UITextField+Ext.swift in Sources */,
 				21AD1159275407060033C7EF /* HomeViewController.swift in Sources */,
 				21885C91276821A000B94A65 /* UIImage+Ext.swift in Sources */,
@@ -324,7 +321,6 @@
 				213384CD2781F7290036B54C /* UIElement.swift in Sources */,
 				21AD1155275407060033C7EF /* AppDelegate.swift in Sources */,
 				21AD1157275407060033C7EF /* SceneDelegate.swift in Sources */,
-				214AF21D2763F8FE003F2546 /* MobileViewController.swift in Sources */,
 				21AD7C68277CE9B40036DC0D /* InputGatheringViewController.swift in Sources */,
 				21ECE593275D8EA100364631 /* SegmentedControl+Accessory.swift in Sources */,
 				21885C8A276816EE00B94A65 /* InputPreviewViewController.swift in Sources */,

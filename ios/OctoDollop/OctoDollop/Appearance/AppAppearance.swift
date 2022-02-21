@@ -84,7 +84,7 @@ enum AppAppearance {
         /// 40 pts
         static let extraLarge: CGFloat = 40
         /// 60 pts
-        static let hyperLarge: CGFloat = 80
+        static let hyperLarge: CGFloat = 65
     }
     
     
