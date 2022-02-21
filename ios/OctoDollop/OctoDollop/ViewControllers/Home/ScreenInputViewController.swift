@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import PhotosUI
 
 
 // MARK: - ScreenGatheringViewController
@@ -41,6 +42,7 @@ class ScreenInputViewController: UIViewController {
         setupConstraints()
         // Actions
         searchButton.addTarget(self, action: #selector(goButtonTapped), for: .touchUpInside)
+        importButton.addTarget(self, action: #selector(importMedia), for: .touchUpInside)
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
     }
     
@@ -132,7 +134,42 @@ class ScreenInputViewController: UIViewController {
         present(navController, animated: true)
     }
     
+    /// Lets the user import existing UI screenshots from his media library
+    @objc private func importMedia() {
+        var pickerConfig = PHPickerConfiguration()
+        pickerConfig.filter = .images
+        pickerConfig.selectionLimit = 1
+        let pickerController = PHPickerViewController(configuration: pickerConfig)
+        pickerController.delegate = self
+        present(pickerController, animated: true)
+
+    }
+    
     /// Resigns first responder
     @objc private func dismissKeyboard() { view.endEditing(true) }
     
 }
+
+
+// MARK: - ScreenInputViewController+PHPickerViewControllerDelegate
+
+
+extension ScreenInputViewController: PHPickerViewControllerDelegate {
+    
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        dismiss(animated: true)
+        guard let assetProvider = results.first?.itemProvider, assetProvider.canLoadObject(ofClass: UIImage.self) else { return }
+        
+        assetProvider.loadObject(ofClass: UIImage.self) { image, _ in
+            guard let uiPreview = image as? UIImage else { return }
+            DispatchQueue.main.async {
+                let inputViewController = InputPreviewViewController(uiPreview: uiPreview)
+                let navController = UINavigationController(rootViewController: inputViewController)
+                navController.modalPresentationStyle = .fullScreen
+                self.present(navController, animated: true)
+            }
+        }
+    }
+    
+}
+
