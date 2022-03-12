@@ -104,6 +104,10 @@ class InputPreviewViewModel {
         onUpdateUI?(additionHistory.flatMap{$0})
     }
     
+    public func startAIProcessing() {
+        
+    }
+    
     /// Dismisses the process or prompts for a new UI element to be identified depending on current app's state
     public func onSecondaryAction() {
         if let screenCap = uiImage, shouldGatherInput { identifyUIEelement?(screenCap) }
