@@ -90,6 +90,7 @@ class HomeViewController: UIViewController {
         view.addSubview(logo)
         // segmented control
         segmentedPicker.segmentIcons = viewModel.sectionIcons
+        segmentedPicker.spacing = AppAppearance.Spacing.large
         segmentedPicker.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(segmentedPicker)
         // collection view
@@ -110,8 +111,7 @@ class HomeViewController: UIViewController {
             logo.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: AppAppearance.Spacing.medium),
             // Segmented control
             segmentedPicker.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            segmentedPicker.topAnchor.constraint(equalTo: logo.bottomAnchor, constant: AppAppearance.Spacing.medium),
-            segmentedPicker.widthAnchor.constraint(equalTo: logo.widthAnchor, multiplier: 1.2),
+            segmentedPicker.topAnchor.constraint(equalTo: logo.bottomAnchor, constant: AppAppearance.Spacing.regular),
             // collection view
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),

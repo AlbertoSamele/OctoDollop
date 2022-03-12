@@ -18,28 +18,26 @@ class HomeViewModel {
     
     
     private enum HomeSection: CaseIterable {
-        case web, mobile, history
+        case input, history
         
         /// Section icon
         public var icon: UIImage? {
             switch self {
-                case .web: return UIImage(systemName: "safari.fill")
-                case .mobile: return UIImage(systemName: "applelogo")
+                case .input: return UIImage(systemName: "safari.fill")
                 case .history: return UIImage(systemName: "book.fill")
             }
         }
         /// Section controller
         public var controller: UIViewController.Type {
             switch self {
-                case .web: return WebViewController.self
-                case .mobile: return MobileViewController.self
+                case .input: return ScreenInputViewController.self
                 case .history: return HistoryViewController.self
             }
         }
     }
     
     
-    // MARK: - Computed properties
+    // MARK: - Public properties
     
     
     /// Section icons sorted by the order in which they should be displayed
@@ -56,6 +54,6 @@ class HomeViewModel {
     
     
     /// Sections to be displayed
-    private let sections: [HomeSection] = [.web, .mobile, .history]
+    private let sections: [HomeSection] = [.input, .history]
 
 }
