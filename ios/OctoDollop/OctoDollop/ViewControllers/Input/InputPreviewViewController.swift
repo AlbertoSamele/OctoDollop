@@ -298,8 +298,12 @@ class InputPreviewViewController: UIViewController {
     /// Starta AI image processing
     @objc private func onAIButtonTapped() {
         aiLoader.startAnimating()
+        let buttonImage = aiButton.image(for: .normal)
         aiButton.setImage(nil, for: .normal)
-        viewModel.startAIProcessing()
+        viewModel.startAIProcessing(transformHeight: uiPreviewer.bounds.height) { [weak self] in
+            self?.aiLoader.stopAnimating()
+            self?.aiButton.setImage(buttonImage, for: .normal)
+        }
     }
     
     /// Confirms current user input
