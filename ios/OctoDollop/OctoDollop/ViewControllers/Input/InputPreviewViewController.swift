@@ -20,6 +20,10 @@ class InputPreviewViewController: UIViewController {
     
     /// Depending on the current state, prompts the user to either identify a new UI element or close the rating process alotgether
     private let xButton = UIButton()
+    /// Prompts the user to automatically identify UI elements through AI
+    private let aiButton = UIButton()
+    /// Displays a loader while the AI is elaborating the image
+    private let aiLoader = UIActivityIndicatorView()
     /// Prompts the user to undo previous action
     private let backButton = UIButton()
     /// Previews web UI to be rated
@@ -77,6 +81,7 @@ class InputPreviewViewController: UIViewController {
         // Actions
         xButton.addTarget(self, action: #selector(onXButtonTapped), for: .touchUpInside)
         confirmButton.addTarget(self, action: #selector(onConfirmButtonTapped), for: .touchUpInside)
+        aiButton.addTarget(self, action: #selector(onAIButtonTapped), for: .touchUpInside)
         backButton.addTarget(self, action: #selector(onBackButtonTapped), for: .touchUpInside)
         // Other
         setupBindings()
@@ -149,6 +154,7 @@ class InputPreviewViewController: UIViewController {
             self.webPreviewer.alpha = self.viewModel.shouldGatherInput ? 0 : 1
             self.uiPreviewer.alpha = self.viewModel.shouldGatherInput ? 1 : 0
             self.backButton.alpha = self.viewModel.shouldGatherInput ? 1 : 0
+            self.aiButton.alpha = self.viewModel.shouldGatherInput ? 1 : 0
             self.xButton.transform = self.viewModel.shouldGatherInput ? CGAffineTransform(rotationAngle: .pi/4) : .identity
             self.backButton.transform = .identity
         }
@@ -200,6 +206,15 @@ class InputPreviewViewController: UIViewController {
         backButton.layer.cornerRadius = buttonSize / 2
         backButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(backButton)
+        // AI button
+        aiButton.configureAsActionButton(image: UIImage(systemName: "brain.head.profile", size: 17, weight: .medium))
+        aiButton.layer.cornerRadius = buttonSize / 2
+        aiButton.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(aiButton)
+        // AI loader
+        aiLoader.tintColor = AppAppearance.Colors.color_0B0C0B
+        aiLoader.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(aiLoader)
         // Confirm button
         confirmButton.configureAsActionButton(title: nil)
         confirmButton.addShadow()
@@ -227,8 +242,18 @@ class InputPreviewViewController: UIViewController {
             xButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: buttonPadding),
             xButton.heightAnchor.constraint(equalToConstant: buttonSize),
             xButton.widthAnchor.constraint(equalTo: xButton.heightAnchor),
+            // AI button
+            aiButton.leadingAnchor.constraint(equalTo: xButton.trailingAnchor, constant: 1.5*buttonPadding),
+            aiButton.centerYAnchor.constraint(equalTo: xButton.centerYAnchor),
+            aiButton.heightAnchor.constraint(equalToConstant: buttonSize),
+            aiButton.widthAnchor.constraint(equalTo: aiButton.heightAnchor),
+            // AI loader
+            aiLoader.centerYAnchor.constraint(equalTo: aiButton.centerYAnchor),
+            aiLoader.centerXAnchor.constraint(equalTo: aiButton.centerXAnchor),
+            aiLoader.widthAnchor.constraint(equalTo: aiButton.widthAnchor, multiplier: 0.8),
+            aiLoader.heightAnchor.constraint(equalTo: aiLoader.widthAnchor),
             // Back button
-            backButton.leadingAnchor.constraint(equalTo: xButton.trailingAnchor, constant: 1.5*buttonPadding),
+            backButton.leadingAnchor.constraint(equalTo: aiButton.trailingAnchor, constant: 1.5*buttonPadding),
             backButton.centerYAnchor.constraint(equalTo: xButton.centerYAnchor),
             backButton.widthAnchor.constraint(equalToConstant: buttonSize),
             backButton.heightAnchor.constraint(equalTo: backButton.widthAnchor),
@@ -269,6 +294,17 @@ class InputPreviewViewController: UIViewController {
     
     /// Undoes last user action
     @objc private func onBackButtonTapped() { viewModel.undo() }
+    
+    /// Starta AI image processing
+    @objc private func onAIButtonTapped() {
+        aiLoader.startAnimating()
+        let buttonImage = aiButton.image(for: .normal)
+        aiButton.setImage(nil, for: .normal)
+        viewModel.startAIProcessing(transformHeight: uiPreviewer.bounds.height) { [weak self] in
+            self?.aiLoader.stopAnimating()
+            self?.aiButton.setImage(buttonImage, for: .normal)
+        }
+    }
     
     /// Confirms current user input
     @objc private func onConfirmButtonTapped() { viewModel.confirmInput() }

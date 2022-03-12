@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit.UIImage
+import Vision
 
 
 // MARK: - InputPreviewViewModel
@@ -102,6 +103,47 @@ class InputPreviewViewModel {
     public func addElements(_ elements: [UIElement]) {
         additionHistory.append(elements)
         onUpdateUI?(additionHistory.flatMap{$0})
+    }
+    
+    /// Identifies UI elements in the image to be rated using AI
+    ///
+    /// - Parameters:
+    ///   - transformHeight: the height of the image displayer
+    ///   - completion: callback triggered once elaboration is completed
+    public func startAIProcessing(transformHeight: CGFloat, _ completion: (() -> Void)?) {
+        guard let image = uiImage?.cgImage else {
+            completion?()
+            return
+        }
+        
+        DispatchQueue.global(qos: .userInitiated).async {
+            defer { DispatchQueue.main.async { completion?() } }
+            
+            let contourRequest = VNDetectContoursRequest()
+            contourRequest.revision = VNDetectContourRequestRevision1
+            contourRequest.contrastAdjustment = 2.0
+            contourRequest.maximumImageDimension = 512
+            
+            let requestHandler = VNImageRequestHandler(cgImage: image, options: [:])
+            try? requestHandler.perform([contourRequest])
+            guard let contoursObservation = contourRequest.results?.first else { return }
+            
+            var aiElements: [UIElement] = []
+            for i in 1...max(1, contoursObservation.contourCount - 2) {
+                guard let boundingBox = try? contoursObservation.contour(at: i).normalizedPath.boundingBox else { continue }
+                // De-noising
+                guard boundingBox.height > 0.015, boundingBox.width > 0.015 else { continue }
+                
+                let reflectionAxis = transformHeight / 2
+                let normalizedY = boundingBox.origin.y * transformHeight
+                let distance = abs(reflectionAxis - normalizedY)
+                let y = reflectionAxis + (normalizedY < reflectionAxis ? distance : -distance)
+                aiElements.append(UIElement(x: boundingBox.origin.x, y: y/transformHeight - boundingBox.height, width: boundingBox.width, height: boundingBox.height))
+            }
+            self.additionHistory.append(aiElements)
+            
+            DispatchQueue.main.async { self.onUpdateUI?(aiElements) }
+        }
     }
     
     /// Dismisses the process or prompts for a new UI element to be identified depending on current app's state
