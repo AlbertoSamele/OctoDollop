@@ -7,7 +7,8 @@
 
 import Foundation
 
-struct UIElement {
+struct UIElement: Hashable {
+    
     /// Identified UI element relative x position
     ///
     /// `$x \in [0, 1]$`
