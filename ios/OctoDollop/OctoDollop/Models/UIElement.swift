@@ -9,7 +9,6 @@ import Foundation
 
 struct UIElement: Hashable {
     
-    private let id = UUID()
     /// Identified UI element relative x position
     ///
     /// `$x \in [0, 1]$`
