@@ -34,7 +34,7 @@ class InputPreviewViewModel {
     /// Added UI elements
     ///
     /// Divided into blocks, where each block represent all elements added during a single session
-    private var additionHistory: [[UIElement]] = []
+    private var additionHistory: [Set<UIElement>] = []
     
     
     // MARK: - Binding properties
@@ -50,7 +50,7 @@ class InputPreviewViewModel {
     public var identifyUIEelement: ((UIImage) -> Void)?
     /// Callback triggered whenever all displayed UI elements should be updated
     ///
-    /// - Parameter $0: the identified UI elements
+    /// - Parameter $0: **all** the identified UI elements
     public var onUpdateUI: (([UIElement]) -> Void)?
     /// Callback triggered whenever a long-running asynchronous operations starts or ends
     ///
@@ -101,8 +101,16 @@ class InputPreviewViewModel {
     ///
     /// - Parameter elements: the user identified UI elements
     public func addElements(_ elements: [UIElement]) {
-        additionHistory.append(elements)
+        additionHistory.append(Set(elements))
         onUpdateUI?(additionHistory.flatMap{$0})
+    }
+    
+    /// Removes the given element from the list of identified UI elements
+    ///
+    /// - Parameter element: the element to be removed
+    public func removeElement(_ element: UIElement) {
+        guard let index = additionHistory.firstIndex(where: { $0.contains(element) }) else { return }
+        additionHistory[index].remove(element)
     }
     
     /// Identifies UI elements in the image to be rated using AI
@@ -128,7 +136,7 @@ class InputPreviewViewModel {
             try? requestHandler.perform([contourRequest])
             guard let contoursObservation = contourRequest.results?.first else { return }
             
-            var aiElements: [UIElement] = []
+            var aiElements: Set<UIElement> = []
             for i in 1...max(1, contoursObservation.contourCount - 2) {
                 guard let boundingBox = try? contoursObservation.contour(at: i).normalizedPath.boundingBox else { continue }
                 // De-noising
@@ -138,11 +146,11 @@ class InputPreviewViewModel {
                 let normalizedY = boundingBox.origin.y * transformHeight
                 let distance = abs(reflectionAxis - normalizedY)
                 let y = reflectionAxis + (normalizedY < reflectionAxis ? distance : -distance)
-                aiElements.append(UIElement(x: boundingBox.origin.x, y: y/transformHeight - boundingBox.height, width: boundingBox.width, height: boundingBox.height))
+                aiElements.insert(UIElement(x: boundingBox.origin.x, y: y/transformHeight - boundingBox.height, width: boundingBox.width, height: boundingBox.height))
             }
             self.additionHistory.append(aiElements)
             
-            DispatchQueue.main.async { self.onUpdateUI?(aiElements) }
+            DispatchQueue.main.async { self.onUpdateUI?(self.additionHistory.flatMap{$0}) }
         }
     }
     

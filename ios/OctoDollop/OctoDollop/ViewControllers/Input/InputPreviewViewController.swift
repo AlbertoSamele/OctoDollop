@@ -18,6 +18,8 @@ class InputPreviewViewController: UIViewController {
     // MARK: - UI properties
     
     
+    /// The currently displayed menu controller
+    private var menuController: MenuController?
     /// Depending on the current state, prompts the user to either identify a new UI element or close the rating process alotgether
     private let xButton = UIButton()
     /// Prompts the user to automatically identify UI elements through AI
@@ -37,7 +39,7 @@ class InputPreviewViewController: UIViewController {
     /// Displays a black gradient on top of `webPreviewer` and `uiPreviewer`
     private let gradientLayer = CAGradientLayer()
     /// The identified ui elements currently added to the view hierarchy
-    private var uiElements: [UIView] = []
+    private var uiElements: [(element: UIElement, view: UIView)] = []
     /// Button size for all rounded buttons
     private let buttonSize: CGFloat = 40
     
@@ -83,6 +85,7 @@ class InputPreviewViewController: UIViewController {
         confirmButton.addTarget(self, action: #selector(onConfirmButtonTapped), for: .touchUpInside)
         aiButton.addTarget(self, action: #selector(onAIButtonTapped), for: .touchUpInside)
         backButton.addTarget(self, action: #selector(onBackButtonTapped), for: .touchUpInside)
+        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onViewTapped)))
         // Other
         setupBindings()
     }
@@ -103,7 +106,7 @@ class InputPreviewViewController: UIViewController {
         }
         viewModel.onUpdateUI = { [weak self] elements in
             guard let self = self else { return }
-            self.uiElements.forEach { $0.removeFromSuperview() }
+            self.uiElements.forEach { $0.view.removeFromSuperview() }
             self.uiElements.removeAll()
             for element in elements {
                 let elementView = self.generateUIElementOverlay()
@@ -112,8 +115,9 @@ class InputPreviewViewController: UIViewController {
                 let width = element.width * self.uiPreviewer.bounds.width
                 let height = element.height * self.uiPreviewer.bounds.height
                 elementView.frame = CGRect(x: x, y: y, width: width, height: height)
-                self.view.addSubview(elementView)
-                self.uiElements.append(elementView)
+                elementView.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(self.onUIElementLongPressed(_:))))
+                self.view.insertSubview(elementView, belowSubview: self.backButton)
+                self.uiElements.append((element: element, view: elementView))
             }
         }
         viewModel.identifyUIEelement = { [weak self] screen in
@@ -305,6 +309,24 @@ class InputPreviewViewController: UIViewController {
             self?.aiButton.setImage(buttonImage, for: .normal)
         }
     }
+    
+    /// Shows contextual menu options from the sender's view
+    ///
+    /// - Parameter sender: the gesture recognizer that triggered the action
+    @objc private func onUIElementLongPressed(_ sender: UILongPressGestureRecognizer) {
+        guard let object = sender.view else { return }
+        menuController = MenuController()
+        menuController?.show(from: self, above: object)
+        menuController?.onDelete = { [weak self] in
+            object.removeFromSuperview()
+            guard let self = self, let index = self.uiElements.firstIndex(where: { $0.view == object }) else { return }
+            self.viewModel.removeElement(self.uiElements[index].element)
+            self.uiElements.remove(at: index)
+        }
+    }
+    
+    /// Dismisses `menuController`
+    @objc private func onViewTapped() { menuController?.dismiss(animated: true) }
     
     /// Confirms current user input
     @objc private func onConfirmButtonTapped() { viewModel.confirmInput() }

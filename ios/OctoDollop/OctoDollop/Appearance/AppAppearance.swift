@@ -44,6 +44,8 @@ enum AppAppearance {
         static let rLight21 = rounded(ofSize: 21, weight: .light)
         /// Rounded, thin, 16 pts
         static let rThin16 = rounded(ofSize: 16, weight: .thin)
+        /// Rounded, medium, 14 pts
+        static let rMedium14 = rounded(ofSize: 14, weight: .medium)
         /// Rounded, semibold, 18 pts
         static let rSemibold18 = rounded(ofSize: 18, weight: .semibold)
         
