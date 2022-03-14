@@ -104,10 +104,14 @@ class InputPreviewViewController: UIViewController {
         viewModel.onStartReadingInput = { [weak self] in
             self?.updateUI(animated: true)
         }
+        viewModel.onUndo = { [weak self] count in
+            guard let self = self else { return }
+            let toBeRemoved = self.uiElements.suffix(count)
+            toBeRemoved.forEach { $0.view.removeFromSuperview() }
+            if count < self.uiElements.count { self.uiElements.removeLast(count) }
+        }
         viewModel.onUpdateUI = { [weak self] elements in
             guard let self = self else { return }
-            self.uiElements.forEach { $0.view.removeFromSuperview() }
-            self.uiElements.removeAll()
             for element in elements {
                 let elementView = self.generateUIElementOverlay()
                 let x = element.x * self.uiPreviewer.bounds.width
@@ -289,6 +293,26 @@ class InputPreviewViewController: UIViewController {
         return view
     }
     
+    /// Marks the given view as having been annotated
+    ///
+    /// - Parameter elementView: the view to which the annotation view will be added to
+    private func addAnnotationView(to elementView: UIView) {
+        let annotationSize: CGFloat = 30
+        let annotationButton = UIButton()
+        annotationButton.configureAsActionButton(image: UIImage(systemName: "doc.fill", size: 13, weight: .medium))
+        annotationButton.tintColor = AppAppearance.Colors.color_49F3B1
+        annotationButton.backgroundColor = AppAppearance.Colors.color_0B0C0B
+        annotationButton.layer.cornerRadius = annotationSize / 2
+        annotationButton.translatesAutoresizingMaskIntoConstraints = false
+        elementView.addSubview(annotationButton)
+        NSLayoutConstraint.activate([
+            annotationButton.centerYAnchor.constraint(equalTo: elementView.topAnchor),
+            annotationButton.centerXAnchor.constraint(equalTo: elementView.trailingAnchor),
+            annotationButton.widthAnchor.constraint(equalToConstant: annotationSize),
+            annotationButton.heightAnchor.constraint(equalTo: annotationButton.widthAnchor),
+        ])
+    }
+    
     
     // MARK: - Action methods
     
@@ -322,6 +346,11 @@ class InputPreviewViewController: UIViewController {
             guard let self = self, let index = self.uiElements.firstIndex(where: { $0.view == object }) else { return }
             self.viewModel.removeElement(self.uiElements[index].element)
             self.uiElements.remove(at: index)
+        }
+        menuController?.onAnnotate = { [weak self] annotation in 
+            guard let self = self, let index = self.uiElements.firstIndex(where: { $0.view == object }) else { return }
+            self.viewModel.annotate(self.uiElements[index].element, with: annotation)
+            self.addAnnotationView(to: self.uiElements[index].view)
         }
     }
     

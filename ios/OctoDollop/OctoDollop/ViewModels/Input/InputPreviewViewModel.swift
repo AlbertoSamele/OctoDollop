@@ -48,10 +48,14 @@ class InputPreviewViewModel {
     ///
     /// - Parameter $0: the screenshot in which the UI element should be identified
     public var identifyUIEelement: ((UIImage) -> Void)?
-    /// Callback triggered whenever all displayed UI elements should be updated
+    /// Callback triggered whenever new UI elements should be displayed
     ///
-    /// - Parameter $0: **all** the identified UI elements
+    /// - Parameter $0: the newly identified UI elements
     public var onUpdateUI: (([UIElement]) -> Void)?
+    /// Callback triggered whenever an element identification action should be undone
+    ///
+    /// - Parameter $0: the number of UI elements the undo action removed
+    public var onUndo: ((Int) -> Void)?
     /// Callback triggered whenever a long-running asynchronous operations starts or ends
     ///
     /// - Parameter $0: whether the operation is still running or not
@@ -102,7 +106,7 @@ class InputPreviewViewModel {
     /// - Parameter elements: the user identified UI elements
     public func addElements(_ elements: [UIElement]) {
         additionHistory.append(Set(elements))
-        onUpdateUI?(additionHistory.flatMap{$0})
+        onUpdateUI?(elements)
     }
     
     /// Removes the given element from the list of identified UI elements
@@ -111,6 +115,19 @@ class InputPreviewViewModel {
     public func removeElement(_ element: UIElement) {
         guard let index = additionHistory.firstIndex(where: { $0.contains(element) }) else { return }
         additionHistory[index].remove(element)
+    }
+    
+    /// Adds an annotation to the given UI element
+    ///
+    /// - Parameters:
+    ///   - element: the UI element to be annotated
+    ///   - annotation: the annotation to be added to the UI element
+    public func annotate(_ element: UIElement, with annotation: String) {
+        guard let index = additionHistory.firstIndex(where: { $0.contains(element) }) else { return }
+        var annotatedEl = element
+        annotatedEl.annotation = annotation
+        additionHistory[index].remove(element)
+        additionHistory[index].insert(annotatedEl)
     }
     
     /// Identifies UI elements in the image to be rated using AI
@@ -150,7 +167,7 @@ class InputPreviewViewModel {
             }
             self.additionHistory.append(aiElements)
             
-            DispatchQueue.main.async { self.onUpdateUI?(self.additionHistory.flatMap{$0}) }
+            DispatchQueue.main.async { self.onUpdateUI?(Array(aiElements)) }
         }
     }
     
@@ -163,8 +180,8 @@ class InputPreviewViewModel {
     /// Undoes last action or prompts dismissal if no action can be undone
     public func undo() {
         if additionHistory.count > 0 {
-            additionHistory.removeLast()
-            onUpdateUI?(additionHistory.flatMap{$0})
+            let removed = additionHistory.removeLast()
+            onUndo?(removed.count)
         }
         else { dismiss?() }
     }

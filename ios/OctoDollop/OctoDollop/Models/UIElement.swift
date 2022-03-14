@@ -25,6 +25,8 @@ struct UIElement: Hashable {
     ///
     /// `$height \in [0, 1]$`
     let height: Double
+    /// User-generated comment about the UI component
+    public var annotation: String?
     
     init(x: Double, y: Double, width: Double, height: Double) {
         guard (x >= 0 && x <= 1) && (y >= 0 && y <= 1) && (width >= 0 && width <= 1) && (height >= 0 && height <= 1)

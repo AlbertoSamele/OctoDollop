@@ -95,6 +95,8 @@ enum AppAppearance {
     
     /// App corner radius
     enum CornerRadius {
+        /// 5 pts
+        static let extraSmall: CGFloat = 5
         /// 10 pts
         static let small: CGFloat = 10
     }
