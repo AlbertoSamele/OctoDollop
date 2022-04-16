@@ -131,7 +131,7 @@ class InputPreviewViewModel {
     /// - Parameter elements: the user identified UI elements
     public func addElements(_ elements: [UIElement]) {
         additionHistory.append(Set(elements))
-        onUpdateUI?(elements)
+        onUpdateUI?(additionHistory.flatMap { $0 })
     }
     
     /// Removes the given element from the list of identified UI elements
