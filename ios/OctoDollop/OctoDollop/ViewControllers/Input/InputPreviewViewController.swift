@@ -108,17 +108,18 @@ class InputPreviewViewController: UIViewController {
             guard let self = self else { return }
             self.uiElements.forEach { $0.view.removeFromSuperview() }
             self.uiElements.removeAll()
-            for element in elements {
-                let elementView = self.generateUIElementOverlay()
-                let x = element.x * self.uiPreviewer.bounds.width
-                let y = element.y * self.uiPreviewer.bounds.height
-                let width = element.width * self.uiPreviewer.bounds.width
-                let height = element.height * self.uiPreviewer.bounds.height
-                elementView.frame = CGRect(x: x, y: y, width: width, height: height)
-                elementView.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(self.onUIElementLongPressed(_:))))
-                self.view.insertSubview(elementView, belowSubview: self.backButton)
-                self.uiElements.append((element: element, view: elementView))
+            self.uiElements = self.uiPreviewer.draw(elements: elements)
+            self.uiElements.forEach({ $0.view.addGestureRecognizer(UILongPressGestureRecognizer(
+                target: self,
+                action: #selector(self.onUIElementLongPressed(_:))))
+            })
+        }
+        viewModel.onRating = { [weak self] rating, elements, image in
+            guard let self = self else { return }
+            let ratingViewController = RatingViewController(rating: rating, elements: elements, image: image, canSave: true) {
+                self.dismiss(animated: true)
             }
+            self.navigationController?.pushViewController(ratingViewController, animated: true)
         }
         viewModel.identifyUIEelement = { [weak self] screen in
             let vc = InputGatheringViewController(ui: screen) { self?.viewModel.addElements($0) }
@@ -227,10 +228,10 @@ class InputPreviewViewController: UIViewController {
         view.addSubview(confirmButton)
         // Gradient
         gradientLayer.colors = [
-            AppAppearance.Colors.color_0B0C0B!.cgColor,
+            AppAppearance.Colors.color_0B0C0B.cgColor,
             UIColor.clear.cgColor,
             UIColor.clear.cgColor,
-            AppAppearance.Colors.color_0B0C0B!.cgColor
+            AppAppearance.Colors.color_0B0C0B.cgColor
         ]
         gradientLayer.locations = [0, 0.25, 0.75, 1.0]
         gradientLayer.frame = view.frame
@@ -277,16 +278,6 @@ class InputPreviewViewController: UIViewController {
             confirmButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -buttonPadding),
             confirmButton.widthAnchor.constraint(equalToConstant: 3*buttonSize),
         ])
-    }
-    
-    /// Generates a view to be used as overlay to identify UI elements
-    ///
-    /// - Returns: the styled overlay
-    private func generateUIElementOverlay() -> UIView {
-        let view = UIView()
-        view.backgroundColor = AppAppearance.Colors.color_49F3B1
-        view.alpha = 0.6
-        return view
     }
     
     
