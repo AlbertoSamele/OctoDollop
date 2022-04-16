@@ -14,6 +14,13 @@ import CoreGraphics
 
 class InputGatheringViewModel {
     
+    // MARK: - Computed properties
+    
+    
+    /// Whether there is an angoing drawing or not
+    public var drawingStarted: Bool { return dynamicOrigin != nil }
+    
+    
     // MARK: - Binding properties
     
     

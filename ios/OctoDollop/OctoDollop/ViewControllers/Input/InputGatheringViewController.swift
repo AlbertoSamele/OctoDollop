@@ -77,10 +77,13 @@ class InputGatheringViewController: UIViewController {
         setupUserInterface()
         setupConstraints()
         // Actions
-        imageView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(onDrag(_:))))
+        let dragGesture = UIPanGestureRecognizer(target: self, action: #selector(onDrag(_:)))
+        imageView.addGestureRecognizer(dragGesture)
         imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onTap)))
         backButton.addTarget(self, action: #selector(onBackButtonTapped), for: .touchUpInside)
         confirmButton.addTarget(self, action: #selector(onConfirmButtonTapped), for: .touchUpInside)
+        // Delegates
+        dragGesture.delegate = self
         // Other
         setupBindings()
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
@@ -210,7 +213,6 @@ class InputGatheringViewController: UIViewController {
     @objc private func onDrag(_ sender: UIPanGestureRecognizer) {
         let coordinates = sender.location(in: imageView)
         switch sender.state {
-            case .began: viewModel.startDrawing(at: coordinates)
             case .changed: viewModel.drawingChanged(coordinates)
             case .ended: viewModel.endDrawing()
             default: break
@@ -243,4 +245,16 @@ class InputGatheringViewController: UIViewController {
 
 extension InputGatheringViewController: UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? { return imageView }
+}
+
+
+// MARK: - InputGatheringViewController+UIGestureRecognizerDelegate
+
+
+extension InputGatheringViewController: UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        let location = touch.location(in: imageView)
+        if !viewModel.drawingStarted { viewModel.startDrawing(at: location) }
+        return true
+    }
 }
