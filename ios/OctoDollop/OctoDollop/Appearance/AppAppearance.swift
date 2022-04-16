@@ -21,13 +21,17 @@ enum AppAppearance {
     /// App colors
     enum Colors {
         /// White
-        static let color_FFFFFF = UIColor(named: "color_FFFFFF")
+        static let color_FFFFFF = UIColor(named: "color_FFFFFF")!
         /// Black equivalent
-        static let color_0B0C0B = UIColor(named: "color_0B0C0B")
+        static let color_0B0C0B = UIColor(named: "color_0B0C0B")!
         /// Very dark gray
-        static let color_1F201F = UIColor(named: "color_1F201F")
+        static let color_1F201F = UIColor(named: "color_1F201F")!
         /// Vibrant turquoise
-        static let color_49F3B1 = UIColor(named: "color_49F3B1")
+        static let color_49F3B1 = UIColor(named: "color_49F3B1")!
+        /// Vibrant red
+        static let color_FF3131 = UIColor(named: "color_FF3131")!
+        /// Vibrant yellow
+        static let color_F3FA64 = UIColor(named: "color_F3FA64")!
     }
     
     
@@ -42,8 +46,12 @@ enum AppAppearance {
         static let rLight30 = rounded(ofSize: 30, weight: .light)
         /// Rounded, light, 21 pts
         static let rLight21 = rounded(ofSize: 21, weight: .light)
+        /// Rounded, light, 14 pts
+        static let rLight14 = rounded(ofSize: 14, weight: .light)
         /// Rounded, thin, 16 pts
         static let rThin16 = rounded(ofSize: 16, weight: .thin)
+        /// Rounded, medium, 16 pts
+        static let rMedium16 = rounded(ofSize: 16, weight: .medium)
         /// Rounded, medium, 14 pts
         static let rMedium14 = rounded(ofSize: 14, weight: .medium)
         /// Rounded, semibold, 18 pts
@@ -73,6 +81,8 @@ enum AppAppearance {
     
     /// App spacing
     enum Spacing {
+        /// 2 pts
+        static let hyperSmall: CGFloat = 2.5
         /// 5 pts
         static let extraSmall: CGFloat = 5
         /// 10 pts
@@ -95,10 +105,10 @@ enum AppAppearance {
     
     /// App corner radius
     enum CornerRadius {
-        /// 5 pts
-        static let extraSmall: CGFloat = 5
         /// 10 pts
         static let small: CGFloat = 10
+        /// 4 pts
+        static let extraSmall: CGFloat = 4
     }
     
 }

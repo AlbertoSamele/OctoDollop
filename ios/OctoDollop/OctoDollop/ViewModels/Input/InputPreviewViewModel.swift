@@ -64,6 +64,13 @@ class InputPreviewViewModel {
     ///
     /// - Returns: completion handler to be called once the screenshot has been correctly captured
     public var captureWebpage: ((@escaping (UIImage) -> Void) -> Void)?
+    /// Callback triggered whenever the UI has been processed and a rating has been received
+    ///
+    /// - Parameters:
+    ///   - $0: the rating
+    ///   - $1: the UI elements relative to the rating
+    ///   - $2: the UI screencap
+    public var onRating: ((Rating, [UIElement], UIImage?) -> Void)?
     
     
     // MARK: - Inits
@@ -91,7 +98,25 @@ class InputPreviewViewModel {
     public func confirmInput() {
         if shouldGatherInput {
             onLoadingChanged?(true)
-            // TODO: Network call
+            // TODO: Network call, mock response for now
+            let rating = Rating(metrics: [
+                MetricGroup(section: "Balance", metrics: [
+                    Metric(type: .hBalance, comment: "Slightly left-heavy", score: Int.random(in: 20...100)),
+                    Metric(type: .vBalance, comment: "Perfectly balanced", score: Int.random(in: 20...100))
+                ]),
+                MetricGroup(section: "Equilibrium", metrics: [
+                    Metric(type: .hEquilibrium, comment: "Great equilibrium", score: Int.random(in: 20...100)),
+                    Metric(type: .vEquilibrium, comment: "Unbalanced towards the top", score: Int.random(in: 20...100))
+                ]),
+                MetricGroup(section: "Symmetry", metrics: [
+                    Metric(type: .hSymmetry, comment: "Very good symmetry", score: Int.random(in: 20...100)),
+                    Metric(type: .vSymmetry, comment: "Skewed towards the top", score: Int.random(in: 20...100)),
+                    Metric(type: .rSymmetry, comment: "OK symmetry", score: Int.random(in: 20...100))
+                ])
+            ], score: Int.random(in: 20...100))
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                self.onRating?(rating, self.additionHistory.flatMap({ $0 }), self.uiImage)
+            }
         } else {
             captureWebpage?() { [weak self] screencap in
                 self?.uiImage = screencap

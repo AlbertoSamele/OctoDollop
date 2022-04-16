@@ -8,7 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		21029303278133170010777D /* InputGatheringViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21029302278133170010777D /* InputGatheringViewModel.swift */; };
+		21251B1C280B3F6A00C6B5BE /* UIImageView+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21251B1B280B3F6A00C6B5BE /* UIImageView+Ext.swift */; };
 		213384CD2781F7290036B54C /* UIElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213384CC2781F7290036B54C /* UIElement.swift */; };
+		213F3EB72809A65F00099EE7 /* PageIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213F3EB62809A65F00099EE7 /* PageIndicator.swift */; };
+		213F3EB9280A315100099EE7 /* RatingBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213F3EB8280A315100099EE7 /* RatingBar.swift */; };
 		214AF2152763E8DA003F2546 /* ScreenInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214AF2142763E8DA003F2546 /* ScreenInputViewController.swift */; };
 		214AF2172763E949003F2546 /* HomeOptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214AF2162763E949003F2546 /* HomeOptionCell.swift */; };
 		214AF21B2763F357003F2546 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 214AF21A2763F357003F2546 /* HomeViewModel.swift */; };
@@ -33,11 +36,20 @@
 		21AD1161275407060033C7EF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 21AD115F275407060033C7EF /* LaunchScreen.storyboard */; };
 		21AD7C68277CE9B40036DC0D /* InputGatheringViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21AD7C67277CE9B40036DC0D /* InputGatheringViewController.swift */; };
 		21ECE593275D8EA100364631 /* SegmentedControl+Accessory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21ECE592275D8EA100364631 /* SegmentedControl+Accessory.swift */; };
+		21F6DB722808D083003A06AF /* RatingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F6DB712808D083003A06AF /* RatingViewController.swift */; };
+		21F6DB752808D150003A06AF /* RatingCircle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F6DB742808D150003A06AF /* RatingCircle.swift */; };
+		21F6DB782808DEDA003A06AF /* RatingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F6DB772808DEDA003A06AF /* RatingViewModel.swift */; };
+		21F6DB7A2808DEFA003A06AF /* Rating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F6DB792808DEFA003A06AF /* Rating.swift */; };
+		21F6DB7C2808E299003A06AF /* RatingSectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F6DB7B2808E299003A06AF /* RatingSectionCell.swift */; };
+		21F6DB7E2808E2ED003A06AF /* RatingSectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F6DB7D2808E2ED003A06AF /* RatingSectionViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		21029302278133170010777D /* InputGatheringViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputGatheringViewModel.swift; sourceTree = "<group>"; };
+		21251B1B280B3F6A00C6B5BE /* UIImageView+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Ext.swift"; sourceTree = "<group>"; };
 		213384CC2781F7290036B54C /* UIElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIElement.swift; sourceTree = "<group>"; };
+		213F3EB62809A65F00099EE7 /* PageIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageIndicator.swift; sourceTree = "<group>"; };
+		213F3EB8280A315100099EE7 /* RatingBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingBar.swift; sourceTree = "<group>"; };
 		214AF2142763E8DA003F2546 /* ScreenInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenInputViewController.swift; sourceTree = "<group>"; };
 		214AF2162763E949003F2546 /* HomeOptionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeOptionCell.swift; sourceTree = "<group>"; };
 		214AF21A2763F357003F2546 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
@@ -64,6 +76,12 @@
 		21AD1162275407060033C7EF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		21AD7C67277CE9B40036DC0D /* InputGatheringViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputGatheringViewController.swift; sourceTree = "<group>"; };
 		21ECE592275D8EA100364631 /* SegmentedControl+Accessory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SegmentedControl+Accessory.swift"; sourceTree = "<group>"; };
+		21F6DB712808D083003A06AF /* RatingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingViewController.swift; sourceTree = "<group>"; };
+		21F6DB742808D150003A06AF /* RatingCircle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingCircle.swift; sourceTree = "<group>"; };
+		21F6DB772808DEDA003A06AF /* RatingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingViewModel.swift; sourceTree = "<group>"; };
+		21F6DB792808DEFA003A06AF /* Rating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rating.swift; sourceTree = "<group>"; };
+		21F6DB7B2808E299003A06AF /* RatingSectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingSectionCell.swift; sourceTree = "<group>"; };
+		21F6DB7D2808E2ED003A06AF /* RatingSectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingSectionViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +99,7 @@
 			isa = PBXGroup;
 			children = (
 				213384CC2781F7290036B54C /* UIElement.swift */,
+				21F6DB792808DEFA003A06AF /* Rating.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -88,8 +107,9 @@
 		214AF2182763F332003F2546 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
-				21885C8B276817AE00B94A65 /* Input */,
 				214AF2192763F34B003F2546 /* Home */,
+				21885C8B276817AE00B94A65 /* Input */,
+				21F6DB762808DEC5003A06AF /* Rating */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -116,6 +136,7 @@
 			children = (
 				214F54DA2755AAA000901C56 /* Extensions */,
 				214F54DD2755AD4400901C56 /* Home */,
+				21F6DB732808D10F003A06AF /* Rating */,
 				214F54CF2755A14100901C56 /* Shared */,
 			);
 			path = Views;
@@ -125,6 +146,7 @@
 			isa = PBXGroup;
 			children = (
 				214F54D02755A15B00901C56 /* TextLogo.swift */,
+				213F3EB62809A65F00099EE7 /* PageIndicator.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -140,8 +162,9 @@
 		214F54D82755A4CE00901C56 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				21885C882768167D00B94A65 /* Input */,
 				214F54D92755A4E300901C56 /* Home */,
+				21885C882768167D00B94A65 /* Input */,
+				21F6DB702808D074003A06AF /* Rating */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -165,6 +188,7 @@
 				214AF22427643213003F2546 /* UILabel+Ext.swift */,
 				21885C8E27681C1600B94A65 /* UIEdgeInsets+Ext.swift */,
 				21885C90276821A000B94A65 /* UIImage+Ext.swift */,
+				21251B1B280B3F6A00C6B5BE /* UIImageView+Ext.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -237,6 +261,33 @@
 				21ECE592275D8EA100364631 /* SegmentedControl+Accessory.swift */,
 			);
 			path = SegmentedControl;
+			sourceTree = "<group>";
+		};
+		21F6DB702808D074003A06AF /* Rating */ = {
+			isa = PBXGroup;
+			children = (
+				21F6DB712808D083003A06AF /* RatingViewController.swift */,
+			);
+			path = Rating;
+			sourceTree = "<group>";
+		};
+		21F6DB732808D10F003A06AF /* Rating */ = {
+			isa = PBXGroup;
+			children = (
+				213F3EB8280A315100099EE7 /* RatingBar.swift */,
+				21F6DB742808D150003A06AF /* RatingCircle.swift */,
+				21F6DB7B2808E299003A06AF /* RatingSectionCell.swift */,
+			);
+			path = Rating;
+			sourceTree = "<group>";
+		};
+		21F6DB762808DEC5003A06AF /* Rating */ = {
+			isa = PBXGroup;
+			children = (
+				21F6DB772808DEDA003A06AF /* RatingViewModel.swift */,
+				21F6DB7D2808E2ED003A06AF /* RatingSectionViewModel.swift */,
+			);
+			path = Rating;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -314,10 +365,16 @@
 				214AF2152763E8DA003F2546 /* ScreenInputViewController.swift in Sources */,
 				214AF22127642A1D003F2546 /* UITextField+Ext.swift in Sources */,
 				21AD1159275407060033C7EF /* HomeViewController.swift in Sources */,
+				213F3EB9280A315100099EE7 /* RatingBar.swift in Sources */,
+				21F6DB782808DEDA003A06AF /* RatingViewModel.swift in Sources */,
 				21885C91276821A000B94A65 /* UIImage+Ext.swift in Sources */,
+				21251B1C280B3F6A00C6B5BE /* UIImageView+Ext.swift in Sources */,
 				214AF22327642BF2003F2546 /* UIButton+Ext.swift in Sources */,
 				214AF22527643213003F2546 /* UILabel+Ext.swift in Sources */,
+				21F6DB752808D150003A06AF /* RatingCircle.swift in Sources */,
 				214AF21F2763F920003F2546 /* HistoryViewController.swift in Sources */,
+				21F6DB722808D083003A06AF /* RatingViewController.swift in Sources */,
+				21F6DB7C2808E299003A06AF /* RatingSectionCell.swift in Sources */,
 				214F54DF2755AD6000901C56 /* SegmentedControl.swift in Sources */,
 				214D660227DE658400212001 /* MenuController.swift in Sources */,
 				21885C8F27681C1600B94A65 /* UIEdgeInsets+Ext.swift in Sources */,
@@ -330,8 +387,11 @@
 				21885C8A276816EE00B94A65 /* InputPreviewViewController.swift in Sources */,
 				214F54CD2755A07B00901C56 /* AppAppearance.swift in Sources */,
 				21029303278133170010777D /* InputGatheringViewModel.swift in Sources */,
+				21F6DB7A2808DEFA003A06AF /* Rating.swift in Sources */,
 				21885C8D276817BC00B94A65 /* InputPreviewViewModel.swift in Sources */,
 				214AF2172763E949003F2546 /* HomeOptionCell.swift in Sources */,
+				213F3EB72809A65F00099EE7 /* PageIndicator.swift in Sources */,
+				21F6DB7E2808E2ED003A06AF /* RatingSectionViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

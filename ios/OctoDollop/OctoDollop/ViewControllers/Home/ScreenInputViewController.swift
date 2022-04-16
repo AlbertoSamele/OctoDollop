@@ -28,7 +28,7 @@ class ScreenInputViewController: UIViewController {
     private let searchButton = UIButton()
     /// Prompts the user to import a screenshot from library and start the evaluation process
     private let importButton = UIButton()
-    /// `searchButton` height
+    /// Action buttons height
     private let actionHeight: CGFloat = 30
     
 
@@ -60,7 +60,7 @@ class ScreenInputViewController: UIViewController {
         let textfieldColor = AppAppearance.Colors.color_FFFFFF
         textInput.attributedPlaceholder = NSAttributedString(
             string: "URL",
-            attributes: [NSAttributedString.Key.foregroundColor:textfieldColor!, NSAttributedString.Key.font:textfieldFont]
+            attributes: [NSAttributedString.Key.foregroundColor:textfieldColor, NSAttributedString.Key.font:textfieldFont]
         )
         textInput.addPadding(.left, amount: AppAppearance.Spacing.medium)
         textInput.addPadding(.right, amount: AppAppearance.Spacing.extraLarge * 1.2)
@@ -68,7 +68,7 @@ class ScreenInputViewController: UIViewController {
         textInput.font = textfieldFont
         textInput.textColor = textfieldColor
         textInput.layer.cornerRadius = AppAppearance.CornerRadius.small
-        textInput.layer.borderColor = AppAppearance.Colors.color_49F3B1?.cgColor
+        textInput.layer.borderColor = AppAppearance.Colors.color_49F3B1.cgColor
         textInput.layer.borderWidth = 1
         textInput.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(textInput)
