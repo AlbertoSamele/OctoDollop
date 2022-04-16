@@ -107,7 +107,7 @@ enum AppAppearance {
     enum CornerRadius {
         /// 10 pts
         static let small: CGFloat = 10
-        /// 5 pts
+        /// 4 pts
         static let extraSmall: CGFloat = 4
     }
     
