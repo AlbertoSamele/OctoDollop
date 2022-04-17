@@ -49,7 +49,7 @@ class EquilibriumRater(Rater):
         """
         if score <= 30:
             return f'Heavy disequilibrium towards the {direction}'
-        elif score <= 50:
+        elif score <= 58:
             return f'Visible disequilibrium towards the {direction}'
         elif score <= 70:
             return f'Slight disequilibrium towards the {direction}'

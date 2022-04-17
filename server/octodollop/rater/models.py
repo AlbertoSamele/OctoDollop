@@ -18,6 +18,11 @@ class Canvas:
         self.x_midpoint: Final[float] = width / 2
         self.y_midpoint: Final[float] = height / 2
 
+    @classmethod
+    def from_json(cls, json):
+        """ Instantiates object from json dictionary """
+        return cls(**json)
+
 
 class Element:
 
@@ -38,6 +43,11 @@ class Element:
         self.y: Final[float] = y
         self.width: Final[float] = width
         self.height: Final[float] = height
+
+    @classmethod
+    def from_json(cls, json):
+        """ Instantiates object from json dictionary """
+        return cls(**json)
 
     def absolute_x(self, canvas: Canvas) -> float:
         """
@@ -154,3 +164,16 @@ class Rating:
         self.id_: Final[str] = id_
         self.rating: Final[int] = rating
         self.comment: Final[str] = comment
+
+    def serialize(self) -> dict:
+        """
+        Returns:
+        --------
+        dict
+            The JSON serialized object
+        """
+        return {
+            'type': self.id_,
+            'score': self.rating,
+            'comment': self.comment
+        }
