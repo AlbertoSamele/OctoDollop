@@ -84,7 +84,7 @@ class SymmetryRater(Rater):
         diff_y = (w1['y'] - w2['y']) / max_y
         diff_w = (w1['w'] - w2['w']) / max_w
         diff_h = (w1['h'] - w2['h']) / max_h
-        return (diff_x + diff_y + diff_w + diff_h) / 4
+        return abs((diff_x + diff_y + diff_w + diff_h) / 4)
 
     def get_message(self, score: int) -> str:
         """

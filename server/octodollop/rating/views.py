@@ -1,5 +1,3 @@
-import json
-
 from ..rater import (Element, Canvas, get_rater)
 from .models import (MetricGroup, RatingResponse)
 from flask import (Blueprint, request, jsonify, abort)
