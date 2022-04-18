@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct UIElement: Hashable {
+struct UIElement: Codable, Hashable {
     
     /// Identified UI element relative x position
     ///
@@ -36,4 +36,11 @@ struct UIElement: Hashable {
         self.width = width
         self.height = height
     }
+}
+
+struct Canvas: Codable {
+    /// The canvas width
+    let width: Float
+    /// The canvas height
+    let height: Float
 }

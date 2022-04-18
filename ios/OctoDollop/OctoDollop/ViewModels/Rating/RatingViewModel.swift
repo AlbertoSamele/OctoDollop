@@ -65,7 +65,7 @@ class RatingViewModel {
     /// - Parameter index: the rating section's index offset
     /// - Returns: the rating section title
     public func sectionTitle(for index: Int) -> String {
-        return rating.metrics[index].section
+        return rating.metrics[index].section.firstUppercased
     }
     
     /// - Parameter index: the rating section's index offset

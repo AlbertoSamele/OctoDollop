@@ -323,7 +323,7 @@ class InputPreviewViewController: UIViewController {
         aiLoader.startAnimating()
         let buttonImage = aiButton.image(for: .normal)
         aiButton.setImage(nil, for: .normal)
-        viewModel.startAIProcessing(transformHeight: uiPreviewer.bounds.height) { [weak self] in
+        viewModel.startAIProcessing() { [weak self] in
             self?.aiLoader.stopAnimating()
             self?.aiButton.setImage(buttonImage, for: .normal)
         }
