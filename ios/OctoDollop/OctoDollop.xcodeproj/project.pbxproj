@@ -35,6 +35,11 @@
 		21AD115E275407060033C7EF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 21AD115D275407060033C7EF /* Assets.xcassets */; };
 		21AD1161275407060033C7EF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 21AD115F275407060033C7EF /* LaunchScreen.storyboard */; };
 		21AD7C68277CE9B40036DC0D /* InputGatheringViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21AD7C67277CE9B40036DC0D /* InputGatheringViewController.swift */; };
+		21B076CB280C6F180089DE89 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B076CA280C6F180089DE89 /* NetworkManager.swift */; };
+		21B076CE280C70770089DE89 /* NetworkManager+Accessory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B076CD280C70770089DE89 /* NetworkManager+Accessory.swift */; };
+		21B076D1280C755F0089DE89 /* RatingRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B076D0280C755F0089DE89 /* RatingRequest.swift */; };
+		21B076D4280C9E400089DE89 /* String+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B076D3280C9E400089DE89 /* String+Ext.swift */; };
+		21B076D6280CE6890089DE89 /* ImageProcessingRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B076D5280CE6890089DE89 /* ImageProcessingRequest.swift */; };
 		21ECE593275D8EA100364631 /* SegmentedControl+Accessory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21ECE592275D8EA100364631 /* SegmentedControl+Accessory.swift */; };
 		21F6DB722808D083003A06AF /* RatingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F6DB712808D083003A06AF /* RatingViewController.swift */; };
 		21F6DB752808D150003A06AF /* RatingCircle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21F6DB742808D150003A06AF /* RatingCircle.swift */; };
@@ -75,6 +80,11 @@
 		21AD1160275407060033C7EF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		21AD1162275407060033C7EF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		21AD7C67277CE9B40036DC0D /* InputGatheringViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputGatheringViewController.swift; sourceTree = "<group>"; };
+		21B076CA280C6F180089DE89 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
+		21B076CD280C70770089DE89 /* NetworkManager+Accessory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NetworkManager+Accessory.swift"; sourceTree = "<group>"; };
+		21B076D0280C755F0089DE89 /* RatingRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingRequest.swift; sourceTree = "<group>"; };
+		21B076D3280C9E400089DE89 /* String+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Ext.swift"; sourceTree = "<group>"; };
+		21B076D5280CE6890089DE89 /* ImageProcessingRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageProcessingRequest.swift; sourceTree = "<group>"; };
 		21ECE592275D8EA100364631 /* SegmentedControl+Accessory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SegmentedControl+Accessory.swift"; sourceTree = "<group>"; };
 		21F6DB712808D083003A06AF /* RatingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingViewController.swift; sourceTree = "<group>"; };
 		21F6DB742808D150003A06AF /* RatingCircle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingCircle.swift; sourceTree = "<group>"; };
@@ -189,6 +199,7 @@
 				21885C8E27681C1600B94A65 /* UIEdgeInsets+Ext.swift */,
 				21885C90276821A000B94A65 /* UIImage+Ext.swift */,
 				21251B1B280B3F6A00C6B5BE /* UIImageView+Ext.swift */,
+				21B076D3280C9E400089DE89 /* String+Ext.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -242,6 +253,7 @@
 			children = (
 				21AD1154275407060033C7EF /* AppDelegate.swift */,
 				21AD1156275407060033C7EF /* SceneDelegate.swift */,
+				21B076C9280C6F070089DE89 /* Managers */,
 				213384CB2781F70F0036B54C /* Models */,
 				214F54CB2755A05700901C56 /* Appearance */,
 				214F54CE2755A13A00901C56 /* Views */,
@@ -252,6 +264,33 @@
 				21AD1162275407060033C7EF /* Info.plist */,
 			);
 			path = OctoDollop;
+			sourceTree = "<group>";
+		};
+		21B076C9280C6F070089DE89 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				21B076CC280C70640089DE89 /* Network */,
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
+		21B076CC280C70640089DE89 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				21B076CF280C75290089DE89 /* Requests */,
+				21B076CA280C6F180089DE89 /* NetworkManager.swift */,
+				21B076CD280C70770089DE89 /* NetworkManager+Accessory.swift */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		21B076CF280C75290089DE89 /* Requests */ = {
+			isa = PBXGroup;
+			children = (
+				21B076D0280C755F0089DE89 /* RatingRequest.swift */,
+				21B076D5280CE6890089DE89 /* ImageProcessingRequest.swift */,
+			);
+			path = Requests;
 			sourceTree = "<group>";
 		};
 		21ECE591275D8E7800364631 /* SegmentedControl */ = {
@@ -373,17 +412,22 @@
 				214AF22527643213003F2546 /* UILabel+Ext.swift in Sources */,
 				21F6DB752808D150003A06AF /* RatingCircle.swift in Sources */,
 				214AF21F2763F920003F2546 /* HistoryViewController.swift in Sources */,
+				21B076D6280CE6890089DE89 /* ImageProcessingRequest.swift in Sources */,
 				21F6DB722808D083003A06AF /* RatingViewController.swift in Sources */,
 				21F6DB7C2808E299003A06AF /* RatingSectionCell.swift in Sources */,
+				21B076CB280C6F180089DE89 /* NetworkManager.swift in Sources */,
 				214F54DF2755AD6000901C56 /* SegmentedControl.swift in Sources */,
 				214D660227DE658400212001 /* MenuController.swift in Sources */,
+				21B076D4280C9E400089DE89 /* String+Ext.swift in Sources */,
 				21885C8F27681C1600B94A65 /* UIEdgeInsets+Ext.swift in Sources */,
+				21B076D1280C755F0089DE89 /* RatingRequest.swift in Sources */,
 				214F54DC2755AAC000901C56 /* UIView+Ext.swift in Sources */,
 				213384CD2781F7290036B54C /* UIElement.swift in Sources */,
 				21AD1155275407060033C7EF /* AppDelegate.swift in Sources */,
 				21AD1157275407060033C7EF /* SceneDelegate.swift in Sources */,
 				21AD7C68277CE9B40036DC0D /* InputGatheringViewController.swift in Sources */,
 				21ECE593275D8EA100364631 /* SegmentedControl+Accessory.swift in Sources */,
+				21B076CE280C70770089DE89 /* NetworkManager+Accessory.swift in Sources */,
 				21885C8A276816EE00B94A65 /* InputPreviewViewController.swift in Sources */,
 				214F54CD2755A07B00901C56 /* AppAppearance.swift in Sources */,
 				21029303278133170010777D /* InputGatheringViewModel.swift in Sources */,

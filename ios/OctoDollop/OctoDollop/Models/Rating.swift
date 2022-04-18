@@ -22,9 +22,9 @@ struct MetricGroup: Codable {
 }
 
 enum MetricType: String, Codable {
-    case hBalance = "horizontal_balance", vBalance = "vertical_balance"
-    case hSymmetry = "horizontal_symmetry", vSymmetry = "vertical_symmetry", rSymmetry = "radial_symmetry"
-    case hEquilibrium = "horizontal_equilibrium", vEquilibrium = "vertical_equilibrium"
+    case hBalance = "balance_horizontal", vBalance = "balance_vertical"
+    case hSymmetry = "symmetry_horizontal", vSymmetry = "symmetry_vertical"
+    case hEquilibrium = "equilibrium_horizontal", vEquilibrium = "equilibrium_vertical"
     
     public var humanReadable: String {
         switch self {
@@ -32,7 +32,6 @@ enum MetricType: String, Codable {
         case .vBalance: return "Vertical balance"
         case .hSymmetry: return "Horizontal symmetry"
         case .vSymmetry: return "Vertical symmetry"
-        case .rSymmetry: return "Radial symmetry"
         case .hEquilibrium: return "Horizontal equilibrium"
         case .vEquilibrium: return "Vertical equilibrium"
         }
