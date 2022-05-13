@@ -22,7 +22,7 @@ def rate():
     ratings: list[MetricGroup] = list()
     rating_results = 0
     # Computing ratings
-    raters = ['balance', 'equilibrium', 'symmetry']
+    raters = ['balance', 'equilibrium', 'symmetry', 'harmony']
     for rater_type in raters:
         rater_res = get_rater(rater_type, elements, canvas).rate()
         # Saving rating results

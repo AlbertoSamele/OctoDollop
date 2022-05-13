@@ -1,6 +1,7 @@
 from .balance import BalanceRater
 from .equilibrium import EquilibriumRater
 from .symmetry import SymmetryRater
+from .harmony import HarmonyRater
 from .rater import Rater
 from .models import (Element, Canvas, Rating)
 from typing import Final
@@ -30,5 +31,6 @@ def get_rater(value: str, elements: list[Element], canvas: Canvas) -> Rater:
 __available_raters: Final[dict[str:Rater]] = {
     'balance': BalanceRater,
     'equilibrium': EquilibriumRater,
-    'symmetry': SymmetryRater
+    'symmetry': SymmetryRater,
+    'harmony': HarmonyRater
 }
