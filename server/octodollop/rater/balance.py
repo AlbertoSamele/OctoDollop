@@ -34,7 +34,7 @@ class BalanceRater(Rater):
         norm_v_score = (w_top - w_bottom) / max(w_top, w_bottom)
         h_score_hr = int(MAX_SCORE * (1 - abs(norm_h_score)))
         v_score_hr = int(MAX_SCORE * (1 - abs(norm_v_score)))
-        msg_h_suffix = 'left' if norm_h_score < 0 else 'right'
+        msg_h_suffix = 'right' if norm_h_score < 0 else 'left'
         msg_v_suffix = 'top' if norm_v_score < 0 else 'bottom'
 
         return [

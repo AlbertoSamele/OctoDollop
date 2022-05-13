@@ -1,4 +1,4 @@
-from typing import Final
+from typing import Final, Optional
 
 
 class Canvas:
@@ -26,7 +26,7 @@ class Canvas:
 
 class Element:
 
-    def __init__(self, x: float, y: float, width: float, height: float):
+    def __init__(self, x: float, y: float, width: float, height: float, annotation: Optional[str]):
         """
         Parameters:
         -----------
@@ -38,16 +38,21 @@ class Element:
             The element width as a proportion of the canvas width
         height : float
             The element height as a proportion of the canvas height
+        annotation : str | None
+            Any comment or feedback associated to the element
         """
         self.x: Final[float] = x
         self.y: Final[float] = y
         self.width: Final[float] = width
         self.height: Final[float] = height
+        self.annotation: Final[Optional[str]] = annotation
 
     @classmethod
-    def from_json(cls, json):
+    def from_json(cls, json: dict):
         """ Instantiates object from json dictionary """
-        return cls(**json)
+        if 'annotation' in json.keys():
+            return cls(**json)
+        return cls(json['x'], json['y'], json['width'], json['height'], None)
 
     def absolute_x(self, canvas: Canvas) -> float:
         """
