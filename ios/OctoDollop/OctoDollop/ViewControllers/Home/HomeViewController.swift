@@ -85,6 +85,7 @@ class HomeViewController: UIViewController {
     
     private func setupUserInterface() {
         view.backgroundColor = AppAppearance.Colors.color_0B0C0B
+        navigationController?.setNavigationBarHidden(true, animated: false)
         // logo
         logo.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(logo)
