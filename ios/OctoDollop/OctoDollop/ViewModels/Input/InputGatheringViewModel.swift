@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreGraphics
+import UIKit
 
 
 // MARK: - InputGatheringViewModel
@@ -47,6 +48,14 @@ class InputGatheringViewModel {
     public var dynamicOrigin: CGPoint?
     /// The number of the UI elements identified by the user
     private var identifiedElementsCount = 0
+    /// The image in which the UI elements should be identified in
+    public let image: UIImage
+    
+    
+    // MARK: - Inits
+    
+    
+    public init(image: UIImage) { self.image = image }
     
     
     // MARK: - Public methods

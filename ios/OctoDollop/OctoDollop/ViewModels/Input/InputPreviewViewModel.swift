@@ -56,10 +56,6 @@ class InputPreviewViewModel {
     ///
     /// - Parameter $0: the number of UI elements the undo action removed
     public var onUndo: ((Int) -> Void)?
-    /// Callback triggered whenever a long-running asynchronous operations starts or ends
-    ///
-    /// - Parameter $0: whether the operation is still running or not
-    public var onLoadingChanged: ((Bool) -> Void)?
     /// Callback triggered whenever a UI should be captured from the currently displayed webpage
     ///
     /// - Returns: completion handler to be called once the screenshot has been correctly captured
@@ -71,6 +67,10 @@ class InputPreviewViewModel {
     ///   - $1: the UI elements relative to the rating
     ///   - $2: the UI screencap
     public var onRating: ((Rating, [UIElement], UIImage?) -> Void)?
+    /// Callback triggered whenever an error happens
+    ///
+    /// - Parameter $0: the error message
+    public var onError: ((String) -> Void)?
     
     
     // MARK: - Inits
@@ -95,25 +95,34 @@ class InputPreviewViewModel {
     
     
     /// Confirms current user input, either prompting a screen capture or sending identified UI elements for elaboration
-    public func confirmInput() {
+    ///
+    /// - Parameter completion: callback triggered when all operations are completed
+    public func confirmInput(_ completion: (() -> Void)?) {
         if let image = uiImage, shouldGatherInput {
-            onLoadingChanged?(true)
+            guard additionHistory.flatMap({ $0 }).count >= 2 else {
+                completion?()
+                self.onError?("Please identify at least two UI elements")
+                return
+            }
             let request = RatingRequest(items: additionHistory.flatMap({ $0 }),
                                         canvas: Canvas(width: Float(image.size.width), height: Float(image.size.height)))
             NetworkManager().request(request) { result in
-                switch result {
-                case .failure(let e): break // TODO: handle errors
-                case .success(let response):
-                    DispatchQueue.main.async {
-                        self.onRating?(response, self.additionHistory.flatMap({ $0 }), self.uiImage)
+                DispatchQueue.main.async {
+                    switch result {
+                    case .failure(let e): self.onError?(e.localizedDescription)
+                    case .success(let response): self.onRating?(response, self.additionHistory.flatMap({ $0 }), self.uiImage)
                     }
+                    completion?()
                 }
             }
         } else {
             captureWebpage?() { [weak self] screencap in
                 self?.uiImage = screencap
                 self?.shouldGatherInput = true
-                self?.onStartReadingInput?()
+                DispatchQueue.main.async {
+                    completion?()
+                    self?.onStartReadingInput?()
+                }
             }
         }
     }
@@ -157,16 +166,15 @@ class InputPreviewViewModel {
         }
         if let request = ImageProcessingRequest(image: image) {
             NetworkManager().request(request) { result in
-                switch result {
-                case .failure(let e): break // TODO: handle error
-                case .success(let response):
-                    self.additionHistory.append(Set(response))
-                    DispatchQueue.main.async {
-                        completion?()
+                DispatchQueue.main.async {
+                    switch result {
+                    case .failure(let e): self.onError?(e.localizedDescription)
+                    case .success(let response):
+                        self.additionHistory.append(Set(response))
                         self.onUpdateUI?(self.additionHistory.flatMap({ $0 }))
                     }
+                    completion?()
                 }
-                
             }
         }
     }
