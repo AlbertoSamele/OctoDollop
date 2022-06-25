@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 
 extension UIImageView {
@@ -17,14 +18,16 @@ extension UIImageView {
     /// - Returns: the element models mapped to their drawn views
     @discardableResult
     internal func draw(elements: [UIElement]) -> [UIComponent] {
+        guard let imageSize = self.image?.size else { return [] }
         var elementViews: [UIComponent] = []
+        let imageRect = AVMakeRect(aspectRatio: imageSize, insideRect: bounds)
         
         for element in elements {
             let elementView = generateUIElementOverlay()
-            let x = element.x * self.bounds.width
-            let y = element.y * self.bounds.height
-            let width = element.width * self.bounds.width
-            let height = element.height * self.bounds.height
+            let x = element.x * imageRect.width + (bounds.width - imageRect.width) / 2
+            let y = element.y * imageRect.height + (bounds.height - imageRect.height) / 2
+            let width = element.width * imageRect.width
+            let height = element.height * imageRect.height
             elementView.frame = CGRect(x: x, y: y, width: width, height: height)
             addSubview(elementView)
             elementViews.append((element: element, view: elementView))

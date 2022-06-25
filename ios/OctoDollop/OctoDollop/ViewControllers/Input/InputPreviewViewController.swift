@@ -26,6 +26,8 @@ class InputPreviewViewController: UIViewController {
     private let aiButton = UIButton()
     /// Displays a loader while the AI is elaborating the image
     private let aiLoader = UIActivityIndicatorView()
+    /// Displays a loader while long running "finalizing"' operations are running
+    private let confirmLoader = UIActivityIndicatorView()
     /// Prompts the user to undo previous action
     private let backButton = UIButton()
     /// Previews web UI to be rated
@@ -121,6 +123,12 @@ class InputPreviewViewController: UIViewController {
                     UILongPressGestureRecognizer(target: self, action: #selector(self.onUIElementLongPressed(_:)))
                 )
             })
+        }
+        viewModel.onError = { [weak self] errorMessage in
+            let popup = PopupViewController()
+            popup.title = "Error"
+            popup.subtitle = errorMessage
+            self?.present(popup, animated: false)
         }
         viewModel.onRating = { [weak self] rating, elements, image in
             guard let self = self else { return }
@@ -225,10 +233,6 @@ class InputPreviewViewController: UIViewController {
         aiButton.layer.cornerRadius = buttonSize / 2
         aiButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(aiButton)
-        // AI loader
-        aiLoader.tintColor = AppAppearance.Colors.color_0B0C0B
-        aiLoader.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(aiLoader)
         // Confirm button
         confirmButton.configureAsActionButton(title: nil)
         confirmButton.addShadow()
@@ -245,6 +249,12 @@ class InputPreviewViewController: UIViewController {
         gradientLayer.locations = [0, 0.25, 0.75, 1.0]
         gradientLayer.frame = view.frame
         view.layer.insertSublayer(gradientLayer, above: uiPreviewer.layer)
+        // Loaders
+        for loader in [aiLoader, confirmLoader] {
+            loader.tintColor = AppAppearance.Colors.color_0B0C0B
+            loader.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(loader)
+        }
     }
     
     private func setupConstraints() {
@@ -266,6 +276,11 @@ class InputPreviewViewController: UIViewController {
             aiLoader.centerXAnchor.constraint(equalTo: aiButton.centerXAnchor),
             aiLoader.widthAnchor.constraint(equalTo: aiButton.widthAnchor, multiplier: 0.8),
             aiLoader.heightAnchor.constraint(equalTo: aiLoader.widthAnchor),
+            // Confirm loader
+            confirmLoader.centerXAnchor.constraint(equalTo: confirmButton.centerXAnchor),
+            confirmLoader.centerYAnchor.constraint(equalTo: confirmButton.centerYAnchor),
+            confirmLoader.heightAnchor.constraint(equalTo: confirmButton.heightAnchor, multiplier: 0.8),
+            confirmLoader.widthAnchor.constraint(equalTo: confirmLoader.heightAnchor),
             // Back button
             backButton.leadingAnchor.constraint(equalTo: aiButton.trailingAnchor, constant: 1.5*buttonPadding),
             backButton.centerYAnchor.constraint(equalTo: xButton.centerYAnchor),
@@ -323,8 +338,10 @@ class InputPreviewViewController: UIViewController {
         aiLoader.startAnimating()
         let buttonImage = aiButton.image(for: .normal)
         aiButton.setImage(nil, for: .normal)
+        aiButton.isEnabled = false
         viewModel.startAIProcessing() { [weak self] in
             self?.aiLoader.stopAnimating()
+            self?.aiButton.isEnabled = true
             self?.aiButton.setImage(buttonImage, for: .normal)
         }
     }
@@ -353,6 +370,16 @@ class InputPreviewViewController: UIViewController {
     @objc private func onViewTapped() { menuController?.dismiss(animated: true) }
     
     /// Confirms current user input
-    @objc private func onConfirmButtonTapped() { viewModel.confirmInput() }
+    @objc private func onConfirmButtonTapped() {
+        let buttonTitle = confirmButton.title(for: .normal)
+        confirmLoader.startAnimating()
+        confirmButton.setTitle("", for: .normal)
+        confirmButton.isEnabled = false
+        viewModel.confirmInput() { [weak self] in
+            self?.confirmButton.isEnabled = true
+            self?.confirmButton.setTitle(buttonTitle, for: .normal)
+            self?.confirmLoader.stopAnimating()
+        }
+    }
     
 }

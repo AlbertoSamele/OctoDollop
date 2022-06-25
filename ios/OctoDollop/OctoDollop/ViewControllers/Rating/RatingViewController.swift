@@ -24,6 +24,10 @@ class RatingViewController: UIViewController {
     private let backButton = UIButton()
     /// Prompts the user to save the rating into his local DB
     private let saveButton = UIButton()
+    /// Prompts the user to enter a name for the rating before saving
+    private let saveTextfield = UITextField()
+    ///  Displays a loader while saving operations are in progress
+    private let saveLoader = UIActivityIndicatorView()
     /// Displays various metrics ratings
     private lazy var collectionView: UICollectionView = {
         return UICollectionView(frame: .zero, collectionViewLayout: flowLayout)
@@ -83,20 +87,36 @@ class RatingViewController: UIViewController {
         collectionView.delegate = self
         collectionView.dataSource = self
         // Other
+        setupBindings()
         collectionView.register(RatingSectionCell.self, forCellWithReuseIdentifier: RatingSectionCell.identifier)
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         if !elementsDrawn {
-            // Resizing image view so fit image
-            let imageSize = imageView.image?.size ?? CGSize(width: 1, height: 1)
-            imageWidthConstraint?.constant = imageView.bounds.height * (imageSize.width) / (imageSize.height)
-            imageView.setNeedsLayout()
-            imageView.layoutIfNeeded()
             // Drawing ui elements
             imageView.draw(elements: viewModel.elements)
             elementsDrawn = true
+        }
+    }
+    
+    
+    // MARK: - Private methods
+    
+    
+    private func setupBindings() {
+        viewModel.onError = { [weak self] errorMessage in
+            let popup = PopupViewController()
+            popup.title = "Error"
+            popup.subtitle = errorMessage
+            self?.present(popup, animated: false)
+        }
+        viewModel.onSave = { [weak self] in
+            self?.saveButton.isHidden = true
+            let popup = PopupViewController()
+            popup.title = "Success"
+            popup.subtitle = "Rating saved successfully. Find it in the home screen history section!"
+            self?.present(popup, animated: false)
         }
     }
     
@@ -148,7 +168,27 @@ class RatingViewController: UIViewController {
         backButton.layer.cornerRadius = buttonSize / 2
         backButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(backButton)
-
+        // Save textfield
+        saveTextfield.layer.cornerRadius = AppAppearance.Spacing.small
+        saveTextfield.layer.borderColor = AppAppearance.Colors.color_49F3B1.cgColor
+        saveTextfield.layer.borderWidth = 1
+        let paddingView = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 15, height: 15)))
+        saveTextfield.leftView = paddingView
+        saveTextfield.rightView = paddingView
+        saveTextfield.leftViewMode = .always
+        saveTextfield.rightViewMode = .always
+        saveTextfield.font = AppAppearance.Fonts.rLight14
+        saveTextfield.attributedPlaceholder = NSAttributedString(
+            string: "Rating name",
+            attributes: [.font:AppAppearance.Fonts.rLight14,
+                         .foregroundColor:AppAppearance.Colors.color_FFFFFF.withAlphaComponent(0.6)]
+        )
+        saveTextfield.textColor = AppAppearance.Colors.color_FFFFFF
+        saveTextfield.translatesAutoresizingMaskIntoConstraints = false
+        // Loader
+        saveLoader.tintColor = AppAppearance.Colors.color_0B0C0B
+        saveLoader.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(saveLoader)
     }
     
     private func setupConstraints() {
@@ -186,6 +226,13 @@ class RatingViewController: UIViewController {
             backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant:  AppAppearance.Spacing.medium),
             backButton.heightAnchor.constraint(equalToConstant: buttonSize),
             backButton.widthAnchor.constraint(equalTo: backButton.heightAnchor),
+            // Save textfield
+            saveTextfield.heightAnchor.constraint(equalToConstant: 35),
+            // Confirm loader
+            saveLoader.centerXAnchor.constraint(equalTo: saveButton.centerXAnchor),
+            saveLoader.centerYAnchor.constraint(equalTo: saveButton.centerYAnchor),
+            saveLoader.heightAnchor.constraint(equalTo: saveButton.heightAnchor, multiplier: 0.8),
+            saveLoader.widthAnchor.constraint(equalTo: saveLoader.heightAnchor),
         ])
     }
     
@@ -194,7 +241,31 @@ class RatingViewController: UIViewController {
     
     
     /// Saves the rating to local DB
-    @objc private func onSaveButtonTapped() { }
+    @objc private func onSaveButtonTapped() {
+        let popup = PopupViewController {
+            self.saveLoader.startAnimating()
+            let buttonTitle = self.saveButton.title(for: .normal)
+            self.saveButton.setTitle("", for: .normal)
+            self.saveButton.isEnabled = false
+            self.backButton.isEnabled = false
+            UIView.animate(withDuration: 0.1) {
+                self.backButton.alpha = 0.7
+            }
+            self.viewModel.save(with: self.saveTextfield.text) {
+                self.saveButton.setTitle(buttonTitle, for: .normal)
+                self.saveButton.isEnabled = true
+                self.backButton.isEnabled = true
+                UIView.animate(withDuration: 0.1) {
+                    self.backButton.alpha = 1
+                }
+                self.saveLoader.stopAnimating()
+            }
+        }
+        popup.title = "Save"
+        popup.subtitle = "Enter the name you wish to save the rating as"
+        popup.addAccessory(saveTextfield)
+        present(popup, animated: false)
+    }
     
     /// Dismisses the rating screen
     @objc private func onBackButtonTapped() { viewModel.dismiss() }

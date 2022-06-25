@@ -16,8 +16,6 @@ class InputGatheringViewController: UIViewController {
     // MARK: - UI properties
     
     
-    /// The screenshot in which UI elements should be identified
-    private let image: UIImage
     /// Displays `image`
     private let imageView = UIImageView()
     /// Wraps `imageView` to enable zooming and scrolling
@@ -55,8 +53,7 @@ class InputGatheringViewController: UIViewController {
     ///   - ui: the screen in which UI elements should be identified
     ///   - onElementsAdded: callback triggered once the user wishes to save all the identified UI elements
     init(ui: UIImage, _ onElementsAdded: @escaping (([UIElement]) -> Void)) {
-        image = ui
-        viewModel = InputGatheringViewModel()
+        viewModel = InputGatheringViewModel(image: ui)
         viewModel.onElementsIdentified = onElementsAdded
         super.init(nibName: nil, bundle: nil)
     }
@@ -79,7 +76,9 @@ class InputGatheringViewController: UIViewController {
         // Actions
         let dragGesture = UIPanGestureRecognizer(target: self, action: #selector(onDrag(_:)))
         imageView.addGestureRecognizer(dragGesture)
-        imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onTap)))
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(onTap))
+        tapGesture.canPrevent(dragGesture)
+        scrollView.addGestureRecognizer(tapGesture)
         backButton.addTarget(self, action: #selector(onBackButtonTapped), for: .touchUpInside)
         confirmButton.addTarget(self, action: #selector(onConfirmButtonTapped), for: .touchUpInside)
         // Delegates
@@ -123,7 +122,7 @@ class InputGatheringViewController: UIViewController {
     private func setupUserInterface() {
         view.isUserInteractionEnabled = true
         // Scrollview
-        scrollView.contentSize = image.size
+        scrollView.contentSize = viewModel.image.size
         let scaleWidth = UIScreen.main.bounds.width / scrollView.contentSize.width
         let scaleHeight = UIScreen.main.bounds.height / scrollView.contentSize.height
         scrollView.minimumZoomScale = min(scaleWidth, scaleHeight)
@@ -136,7 +135,7 @@ class InputGatheringViewController: UIViewController {
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(scrollView)
         // Previewer
-        imageView.image = image
+        imageView.image = viewModel.image
         imageView.contentMode = .scaleAspectFit
         imageView.isUserInteractionEnabled = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -252,9 +251,11 @@ extension InputGatheringViewController: UIScrollViewDelegate {
 
 
 extension InputGatheringViewController: UIGestureRecognizerDelegate {
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-        let location = touch.location(in: imageView)
+    
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        let location = gestureRecognizer.location(in: imageView)
         if !viewModel.drawingStarted { viewModel.startDrawing(at: location) }
         return true
     }
+    
 }

@@ -26,6 +26,12 @@ class RatingViewModel {
     
     /// Callback triggered whenever the rating screen should be dismissed
     private var onBack: (() -> Void)
+    /// Callback triggered whenever an error happens
+    ///
+    /// - Parameter $0: the error message
+    public var onError: ((String) -> Void)?
+    /// Callback triggered when the rating model has been saved to the local DB
+    public var onSave: (() -> Void)?
     
     
     // MARK: - Datasource properties
@@ -65,7 +71,8 @@ class RatingViewModel {
     /// - Parameter index: the rating section's index offset
     /// - Returns: the rating section title
     public func sectionTitle(for index: Int) -> String {
-        return rating.metrics[index].section.firstUppercased
+        let sanitizedIndex = max(0, min(index, rating.metrics.count - 1))
+        return rating.metrics[sanitizedIndex].section.firstUppercased
     }
     
     /// - Parameter index: the rating section's index offset
@@ -77,4 +84,27 @@ class RatingViewModel {
     
     /// Dismisses the rating screen
     public func dismiss() { onBack() }
+    
+    /// Saes the rating to the local database
+    ///
+    /// - Parameters:
+    ///   - name: the rating's name
+    ///   - completion: callback called once the saving completion is complete
+    public func save(with name: String?, _ completion: (() -> Void)?) {
+        guard let name = name?.trimmingCharacters(in: .whitespacesAndNewlines), name.count > 0 else {
+            completion?()
+            onError?("The provided name is invalid, please try again")
+            return
+        }
+        DataManager.shared.add(model: rating, name: name, image: ui, elements: elements) { success in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                completion?()
+                if success {
+                    NotificationsManager().post(notification: .ratingSaved)
+                    self.onSave?()
+                }
+                else { self.onError?("There was an error saving your rating. please try again") }
+            }
+        }
+    }
 }
