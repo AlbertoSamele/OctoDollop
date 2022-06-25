@@ -48,8 +48,12 @@ enum AppAppearance {
         static let rLight21 = rounded(ofSize: 21, weight: .light)
         /// Rounded, light, 14 pts
         static let rLight14 = rounded(ofSize: 14, weight: .light)
+        /// Rounded, light, 16 pts
+        static let rLight16 = rounded(ofSize: 16, weight: .light)
         /// Rounded, thin, 16 pts
         static let rThin16 = rounded(ofSize: 16, weight: .thin)
+        /// Rounded, medium, 18 pts
+        static let rMedium18 = rounded(ofSize: 18, weight: .medium)
         /// Rounded, medium, 16 pts
         static let rMedium16 = rounded(ofSize: 16, weight: .medium)
         /// Rounded, medium, 14 pts
@@ -105,6 +109,7 @@ enum AppAppearance {
     
     /// App corner radius
     enum CornerRadius {
+        static let large: CGFloat = 30
         /// 10 pts
         static let small: CGFloat = 10
         /// 4 pts
