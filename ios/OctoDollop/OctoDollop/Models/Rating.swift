@@ -9,7 +9,7 @@ import Foundation
 import CoreData
 import UIKit
 
-struct Rating: Codable {
+struct Rating: Codable, Hashable {
     /// The metrics being evaluated
     let metrics: [MetricGroup]
     /// The overall metrics score
@@ -32,7 +32,7 @@ struct Rating: Codable {
     mutating func setMainColor(_ color: UIColor) { mainUIColor = CodableColor(uiColor: color) }
 }
 
-struct CodableColor: Codable {
+struct CodableColor: Codable, Hashable {
     private var r: CGFloat = 1
     private var g: CGFloat = 1
     private var b: CGFloat = 1
@@ -43,14 +43,14 @@ struct CodableColor: Codable {
     init(uiColor : UIColor) { uiColor.getRed(&r, green: &g, blue: &b, alpha: &a) }
 }
 
-struct MetricGroup: Codable {
+struct MetricGroup: Codable, Hashable {
     /// Human readable section title
     let section: String
     /// The metrics in the section
     let metrics: [Metric]
 }
 
-enum MetricType: String, Codable {
+enum MetricType: String, Codable, Hashable {
     case hBalance = "balance_horizontal", vBalance = "balance_vertical"
     case hSymmetry = "symmetry_horizontal", vSymmetry = "symmetry_vertical"
     case hEquilibrium = "equilibrium_horizontal", vEquilibrium = "equilibrium_vertical"
@@ -68,9 +68,13 @@ enum MetricType: String, Codable {
         case .proportion: return "Proportion"
         }
     }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(rawValue)
+    }
 }
 
-struct Metric: Codable {
+struct Metric: Codable, Hashable {
     /// The metric type
     public let type: MetricType
     /// A human readable comment explaining the metric's score

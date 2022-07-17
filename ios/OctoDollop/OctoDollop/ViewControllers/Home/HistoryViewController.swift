@@ -17,8 +17,14 @@ class HistoryViewController: UIViewController {
     // MARK: - UI properties
     
     
+    /// Prompts the user to select the ratings to compute the consistency of
+    private let consistencyButton = UIButton()
     /// Displays saved ratings summary
     private let tableView = UITableView()
+    /// Lays out `consistencyButton` and `tableView` vertically
+    private lazy var ratingsStack: UIStackView = {
+        return UIStackView(arrangedSubviews: [consistencyButton, tableView])
+    }()
     /// Empty state image
     private let placeholderImage = UIImageView()
     /// Empty state title
@@ -27,6 +33,8 @@ class HistoryViewController: UIViewController {
     private lazy var emptyPlaceholder: UIStackView = {
        return UIStackView(arrangedSubviews: [placeholderImage, placeholderTitle])
     }()
+    /// `consistencyButton` height
+    private let actionHeight: CGFloat = 45
     
     
     // MARK: - Datasource properties
@@ -47,6 +55,8 @@ class HistoryViewController: UIViewController {
         // Delegates
         tableView.delegate = self
         tableView.dataSource = self
+        // Actions
+        consistencyButton.addTarget(self, action: #selector(onConsistencyButtonTapped), for: .touchUpInside)
         // Other
         setupBindings()
         tableView.register(HistoryCell.self, forCellReuseIdentifier: HistoryCell.identifier)
@@ -60,8 +70,43 @@ class HistoryViewController: UIViewController {
         viewModel.onRatingsChanged = { [weak self] in
             guard let self = self else { return }
             self.tableView.reloadData()
+            self.consistencyButton.isHidden = self.viewModel.ratingsCount < 2
             self.tableView.isHidden = self.viewModel.ratingsCount == 0
             self.emptyPlaceholder.isHidden = !self.tableView.isHidden
+        }
+        viewModel.onPresentRating = { [weak self] rating in
+            guard let self = self else { return }
+            
+            let ratingVC = RatingViewController(
+                rating: rating,
+                elements: rating.elements ?? [],
+                image: try? DataManager.shared.image(for: rating),
+                canSave: false,
+                onBack: { self.navigationController?.popViewController(animated: true) }
+            )
+            self.navigationController?.pushViewController(ratingVC, animated: true)
+        }
+        viewModel.onConsistencyModeChanged = { [weak self] consistencyEnabled in
+            guard let self = self else { return }
+            self.consistencyButton.setTitle(consistencyEnabled ? "Compute" : "Get consistency", for: .normal)
+            for cell in self.tableView.subviews.compactMap({ $0 as? HistoryCell }) {
+                let cellIndex = self.tableView.indexPath(for: cell)
+                let isCellSelected = consistencyEnabled && cellIndex != nil ? self.viewModel.isRatingSelected(at: cellIndex!.row) : false
+                cell.setConsistencyMode(consistencyEnabled, selected: isCellSelected)
+            }
+        }
+        viewModel.onConsistencyStateChanged = { [weak self] ratingIndex, isSelected in
+            (self?.tableView.cellForRow(at: IndexPath(row: ratingIndex, section: 0)) as? HistoryCell)?.setConsistencyMode(true, selected: isSelected)
+        }
+        viewModel.onComputeConsistency = { [weak self] ratings in
+            let consistencyViewController = ConsistencyRatingViewController(ratings: ratings)
+            self?.present(consistencyViewController, animated: true)
+        }
+        viewModel.onError = { [weak self] errorMessage in
+            let popup = PopupViewController()
+            popup.title = "Error"
+            popup.subtitle = errorMessage
+            self?.present(popup, animated: false)
         }
     }
     
@@ -70,13 +115,26 @@ class HistoryViewController: UIViewController {
     
     
     private func setupUserInterface() {
+        // Rating stack
+        ratingsStack.axis = .vertical
+        ratingsStack.distribution = .equalSpacing
+        ratingsStack.alignment = .center
+        ratingsStack.spacing = AppAppearance.Spacing.extraLarge
+        ratingsStack.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(ratingsStack)
+        // Consistency button
+        consistencyButton.configureAsActionButton(title: "Get consistency")
+        consistencyButton.addShadow()
+        consistencyButton.isHidden = viewModel.ratingsCount < 2
+        consistencyButton.layer.cornerRadius = actionHeight / 2
+        consistencyButton.translatesAutoresizingMaskIntoConstraints = false
         // Tableview
+        tableView.showsVerticalScrollIndicator = false
         tableView.isHidden = viewModel.ratingsCount == 0
         tableView.separatorStyle = .none
         tableView.backgroundColor = .clear
         tableView.rowHeight = UITableView.automaticDimension
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(tableView)
         // Placeholder image
         placeholderImage.image = UIImage(named: "EmptyPlaceholder")
         placeholderImage.contentMode = .scaleAspectFit
@@ -101,11 +159,17 @@ class HistoryViewController: UIViewController {
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
+            // Rating stack
+            ratingsStack.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            ratingsStack.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            ratingsStack.topAnchor.constraint(equalTo: view.topAnchor),
+            // Consistency button
+            consistencyButton.heightAnchor.constraint(equalToConstant: actionHeight),
+            consistencyButton.widthAnchor.constraint(equalToConstant: 200),
             // Tableview
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.topAnchor.constraint(equalTo: view.topAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: ratingsStack.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: ratingsStack.trailingAnchor),
+            tableView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.95),
             // Empty placeholder
             emptyPlaceholder.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             emptyPlaceholder.topAnchor.constraint(equalTo: view.topAnchor),
@@ -116,6 +180,14 @@ class HistoryViewController: UIViewController {
             placeholderTitle.widthAnchor.constraint(equalTo: placeholderImage.widthAnchor, multiplier: 0.75),
         ])
     }
+    
+    
+    // MARK: - Action methods
+    
+    
+    /// Toggles consistency mode
+    @objc private func onConsistencyButtonTapped() { viewModel.toggleConsistencyMode() }
+    
 }
 
 
@@ -132,16 +204,26 @@ extension HistoryViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: HistoryCell.identifier, for: indexPath) as! HistoryCell
-        cell.configure(with: viewModel.rating(for: indexPath.row))
+        cell.configure(
+            with: viewModel.rating(for: indexPath.row),
+            consistencyModeEnabled: viewModel.isConsistencyMode,
+            consistencySelected: viewModel.isRatingSelected(at: indexPath.row)
+        )
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let rating = viewModel.rating(for: indexPath.row)
-        let ratingVC = RatingViewController(rating: rating, elements: rating.elements ?? [], image: try? DataManager.shared.image(for: rating), canSave: false) {
-            self.navigationController?.popViewController(animated: true)
-        }
-        navigationController?.pushViewController(ratingVC, animated: true)
+        viewModel.selectRating(at: indexPath.row)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 45
+    }
+    
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        let view = UIView()
+        view.backgroundColor = .clear
+        return view
     }
 
 }
