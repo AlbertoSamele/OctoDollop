@@ -116,7 +116,7 @@ class HomeViewController: UIViewController {
             // collection view
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            collectionView.topAnchor.constraint(equalTo: segmentedPicker.bottomAnchor, constant: AppAppearance.Spacing.hyperLarge),
+            collectionView.topAnchor.constraint(equalTo: segmentedPicker.bottomAnchor, constant: AppAppearance.Spacing.extraLarge),
             collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
     }

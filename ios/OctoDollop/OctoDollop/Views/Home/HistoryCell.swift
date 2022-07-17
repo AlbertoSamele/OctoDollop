@@ -21,7 +21,7 @@ class HistoryCell: UITableViewCell {
     // MARK: - UI properties
     
     
-    /// Wraps all the content
+    /// Wraps the rating's data
     private let containerView = UIView()
     /// Shows a colored tile
     private let colorTile = UIView()
@@ -35,8 +35,12 @@ class HistoryCell: UITableViewCell {
     }()
     /// Shows the achieved rating score
     private let ratingCircle = ProgressCircle()
+    /// Displays whether the cell is selected during consistency mode
+    private let consistencyIndicator = UIView()
     /// `colorTle` height
     private let colorTileHeight: CGFloat = 60
+    /// `consistencyIndicator` height
+    private let consistencyHeight: CGFloat = 15
     
     
     // MARK: - Inits
@@ -59,8 +63,11 @@ class HistoryCell: UITableViewCell {
     
     /// Updates the UI to display the given model's data
     ///
-    /// - Parameter rating: the rating to be displayed
-    public func configure(with rating: Rating) {
+    /// - Parameters:
+    ///   - rating: the rating to be displayed
+    ///   - consistencyModeEnabled: whether consistency mode is enabled or not
+    ///   - consistencySelected: whether the cell is selected during consistency mode or not
+    public func configure(with rating: Rating, consistencyModeEnabled: Bool, consistencySelected: Bool) {
         titleLabel.text = rating.name
         ratingCircle.strokePercentage = CGFloat(rating.score) / 100.0
         switch rating.score {
@@ -75,11 +82,32 @@ class HistoryCell: UITableViewCell {
             subtitleLabel.text = showDate
         }
         colorTile.backgroundColor = rating.mainUIColor?.color ?? AppAppearance.Colors.color_49F3B1
+        setConsistencyMode(consistencyModeEnabled, selected: consistencySelected, animated: false)
     }
+    
+    /// Enables or disables consistency mode with an animation
+    ///
+    /// - Parameters:
+    ///   - enabled: whether consistency mode should be enabled or not
+    ///   - selected: whether the cell is selected during consistency mode or not
+    public func setConsistencyMode(_ enabled: Bool, selected: Bool) { setConsistencyMode(enabled, selected: selected, animated: true) }
     
     
     // MARK: - UI methods
     
+    
+    /// Enables or disables consistency mode
+    ///
+    /// - Parameters:
+    ///   - enabled: whether consistency mode should be enabled or not
+    ///   - selected: whether the cell is selected during consistency mode or not
+    ///   - animated: whether the UI updated should be animated or not
+    private func setConsistencyMode(_ enabled: Bool, selected: Bool, animated: Bool) {
+        UIView.animate(withDuration: animated ? 0.2 : 0) {
+            self.consistencyIndicator.alpha = enabled ? 1 : 0
+            self.consistencyIndicator.backgroundColor = enabled && selected ? AppAppearance.Colors.color_49F3B1 : AppAppearance.Colors.color_0B0C0B
+        }
+    }
     
     private func setupUserInterface() {
         selectionStyle = .none
@@ -110,6 +138,14 @@ class HistoryCell: UITableViewCell {
         // Rating circle
         ratingCircle.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(ratingCircle)
+        // Consistency selector
+        consistencyIndicator.backgroundColor = AppAppearance.Colors.color_0B0C0B
+        consistencyIndicator.layer.cornerRadius = consistencyHeight / 2
+        consistencyIndicator.layer.borderWidth = 2
+        consistencyIndicator.layer.borderColor = AppAppearance.Colors.color_49F3B1.cgColor
+        consistencyIndicator.addShadow()
+        consistencyIndicator.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(consistencyIndicator)
     }
     
     private func setupConstraints() {
@@ -122,7 +158,7 @@ class HistoryCell: UITableViewCell {
             containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -AppAppearance.Spacing.extraLarge),
             // Color tile
             colorTile.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
-            colorTile.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: AppAppearance.Spacing.regular),
+            colorTile.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: AppAppearance.Spacing.large),
             colorTile.heightAnchor.constraint(equalToConstant: colorTileHeight),
             colorTile.widthAnchor.constraint(equalTo: colorTile.heightAnchor),
             // Text stack
@@ -132,7 +168,12 @@ class HistoryCell: UITableViewCell {
             ratingCircle.widthAnchor.constraint(equalTo: colorTile.heightAnchor, multiplier: 0.8),
             ratingCircle.heightAnchor.constraint(equalTo: ratingCircle.widthAnchor),
             ratingCircle.centerYAnchor.constraint(equalTo: colorTile.centerYAnchor),
-            ratingCircle.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -AppAppearance.Spacing.extraLarge),
+            ratingCircle.trailingAnchor.constraint(equalTo: consistencyIndicator.leadingAnchor, constant: -AppAppearance.Spacing.regular*0.85),
+            // Consistency selector
+            consistencyIndicator.widthAnchor.constraint(equalToConstant: consistencyHeight),
+            consistencyIndicator.heightAnchor.constraint(equalTo: consistencyIndicator.widthAnchor),
+            consistencyIndicator.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -AppAppearance.Spacing.regular),
+            consistencyIndicator.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
         ])
     }
 }

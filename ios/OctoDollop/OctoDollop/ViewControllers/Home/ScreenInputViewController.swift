@@ -52,7 +52,7 @@ class ScreenInputViewController: UIViewController {
     
     private func setupUserInterface() {
         // Instructions
-        titleLabel.configureAsInstructionslabel(title: "Enter the url of the website you wish to rank")
+        titleLabel.configureAsInstructionslabel(title: "Enter the url of the UI you wish to rank")
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(titleLabel)
         // Textfield

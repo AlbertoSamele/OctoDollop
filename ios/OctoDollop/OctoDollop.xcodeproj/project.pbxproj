@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		21029303278133170010777D /* InputGatheringViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21029302278133170010777D /* InputGatheringViewModel.swift */; };
 		21251B1C280B3F6A00C6B5BE /* UIImageView+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21251B1B280B3F6A00C6B5BE /* UIImageView+Ext.swift */; };
+		21268EC62868D1CE00866D85 /* ConsistencyRatingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21268EC52868D1CE00866D85 /* ConsistencyRatingViewController.swift */; };
+		21268EC82868D24500866D85 /* ConsistencyRatingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21268EC72868D24500866D85 /* ConsistencyRatingViewModel.swift */; };
 		2128C0DE280F64F700579DD2 /* NotificationsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2128C0DD280F64F700579DD2 /* NotificationsManager.swift */; };
 		213384CD2781F7290036B54C /* UIElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 213384CC2781F7290036B54C /* UIElement.swift */; };
 		2135B957280DC01900BA5A5A /* PopupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2135B956280DC01900BA5A5A /* PopupViewController.swift */; };
@@ -59,6 +61,8 @@
 /* Begin PBXFileReference section */
 		21029302278133170010777D /* InputGatheringViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputGatheringViewModel.swift; sourceTree = "<group>"; };
 		21251B1B280B3F6A00C6B5BE /* UIImageView+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Ext.swift"; sourceTree = "<group>"; };
+		21268EC52868D1CE00866D85 /* ConsistencyRatingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsistencyRatingViewController.swift; sourceTree = "<group>"; };
+		21268EC72868D24500866D85 /* ConsistencyRatingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsistencyRatingViewModel.swift; sourceTree = "<group>"; };
 		2128C0DD280F64F700579DD2 /* NotificationsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsManager.swift; sourceTree = "<group>"; };
 		213384CC2781F7290036B54C /* UIElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIElement.swift; sourceTree = "<group>"; };
 		2135B956280DC01900BA5A5A /* PopupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopupViewController.swift; sourceTree = "<group>"; };
@@ -351,6 +355,7 @@
 			isa = PBXGroup;
 			children = (
 				21F6DB712808D083003A06AF /* RatingViewController.swift */,
+				21268EC52868D1CE00866D85 /* ConsistencyRatingViewController.swift */,
 			);
 			path = Rating;
 			sourceTree = "<group>";
@@ -370,6 +375,7 @@
 			children = (
 				21F6DB772808DEDA003A06AF /* RatingViewModel.swift */,
 				21F6DB7D2808E2ED003A06AF /* RatingSectionViewModel.swift */,
+				21268EC72868D24500866D85 /* ConsistencyRatingViewModel.swift */,
 			);
 			path = Rating;
 			sourceTree = "<group>";
@@ -476,11 +482,13 @@
 				21AD1157275407060033C7EF /* SceneDelegate.swift in Sources */,
 				21AD7C68277CE9B40036DC0D /* InputGatheringViewController.swift in Sources */,
 				21ECE593275D8EA100364631 /* SegmentedControl+Accessory.swift in Sources */,
+				21268EC82868D24500866D85 /* ConsistencyRatingViewModel.swift in Sources */,
 				21B076CE280C70770089DE89 /* NetworkManager+Accessory.swift in Sources */,
 				21885C8A276816EE00B94A65 /* InputPreviewViewController.swift in Sources */,
 				214F54CD2755A07B00901C56 /* AppAppearance.swift in Sources */,
 				21029303278133170010777D /* InputGatheringViewModel.swift in Sources */,
 				21F6DB7A2808DEFA003A06AF /* Rating.swift in Sources */,
+				21268EC62868D1CE00866D85 /* ConsistencyRatingViewController.swift in Sources */,
 				2183A406280F1EC0008E8D0C /* HistoryCell.swift in Sources */,
 				21885C8D276817BC00B94A65 /* InputPreviewViewModel.swift in Sources */,
 				2183A408280F280B008E8D0C /* ProgressCircle.swift in Sources */,
