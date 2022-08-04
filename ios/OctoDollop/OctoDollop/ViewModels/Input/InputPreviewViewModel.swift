@@ -117,7 +117,14 @@ class InputPreviewViewModel {
             }
         } else {
             captureWebpage?() { [weak self] screencap in
-                self?.uiImage = screencap
+                let scale: CGFloat = 1.45
+                let scaledImageSize = CGSize(width: screencap.size.width * scale, height: screencap.size.height * scale)
+                UIGraphicsBeginImageContextWithOptions(scaledImageSize, true, UIScreen.main.scale)
+                screencap.draw(in: CGRect(origin: .zero, size: scaledImageSize))
+                let scaledImage = UIGraphicsGetImageFromCurrentImageContext()
+                UIGraphicsEndImageContext()
+                
+                self?.uiImage = scaledImage
                 self?.shouldGatherInput = true
                 DispatchQueue.main.async {
                     completion?()
