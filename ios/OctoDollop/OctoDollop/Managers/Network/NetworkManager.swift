@@ -14,7 +14,7 @@ class NetworkManager {
     
     
     /// Octodollop API base url
-    private let baseUrl = "http://127.0.0.1:5005/"
+    private let baseUrl = "https://d2e3-44-204-233-16.ngrok.io/"
     
     
     // MARK: - Private methods

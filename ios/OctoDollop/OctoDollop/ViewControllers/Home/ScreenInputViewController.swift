@@ -67,6 +67,7 @@ class ScreenInputViewController: UIViewController {
         textInput.backgroundColor = .clear
         textInput.font = textfieldFont
         textInput.textColor = textfieldColor
+        textInput.keyboardType = .URL
         textInput.layer.cornerRadius = AppAppearance.CornerRadius.small
         textInput.layer.borderColor = AppAppearance.Colors.color_49F3B1.cgColor
         textInput.layer.borderWidth = 1
